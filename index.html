@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#111827">
+  <meta name="description" content="PWA Test 2">
+  <link rel="manifest" href="./manifest.json">
+  <title>PWA Test 2</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      font-family: Arial, sans-serif; background: #f5f7fa;
+    }
+    .card {
+      width: min(92%, 420px); padding: 30px; background: white;
+      border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,.08);
+      text-align: center;
+    }
+    h1 { margin-top: 0; }
+    .status {
+      margin: 14px 0; padding: 14px; border-radius: 12px;
+      background: #f1f3f5;
+    }
+    .ok { background: #e9f7ef; }
+    .bad { background: #fdecec; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>PWA Test 2</h1>
+    <p>Manifest + Service Worker</p>
+    <div id="manifest" class="status">Manifest: checking...</div>
+    <div id="sw" class="status">Service Worker: checking...</div>
+    <div id="mode" class="status">Display mode: checking...</div>
+    <p id="offline">Status jaringan: checking...</p>
+  </main>
+
+  <script>
+    function setStatus(id, ok, text) {
+      const el = document.getElementById(id);
+      el.textContent = text;
+      el.className = "status " + (ok ? "ok" : "bad");
+    }
+
+    async function testManifest() {
+      try {
+        const response = await fetch("./manifest.json", { cache: "no-store" });
+        const manifest = await response.json();
+        const ok = !!manifest.name && !!manifest.start_url && !!manifest.icons;
+        setStatus("manifest", ok, ok ? "Manifest: OK" : "Manifest: ERROR");
+      } catch (e) {
+        setStatus("manifest", false, "Manifest: ERROR");
+      }
+    }
+
+    async function testServiceWorker() {
+      if (!("serviceWorker" in navigator)) {
+        setStatus("sw", false, "Service Worker: tidak didukung");
+        return;
+      }
+
+      try {
+        const registration = await navigator.serviceWorker.register("./service-worker.js");
+        await navigator.serviceWorker.ready;
+        setStatus(
+          "sw",
+          true,
+          "Service Worker: AKTIF (" + registration.scope + ")"
+        );
+      } catch (e) {
+        setStatus("sw", false, "Service Worker: ERROR — " + e.message);
+      }
+    }
+
+    function testDisplayMode() {
+      const standalone = window.matchMedia("(display-mode: standalone)").matches;
+      setStatus(
+        "mode",
+        true,
+        standalone ? "Display mode: STANDALONE (PWA)" : "Display mode: BROWSER"
+      );
+    }
+
+    function networkStatus() {
+      document.getElementById("offline").textContent =
+        "Status jaringan: " + (navigator.onLine ? "ONLINE" : "OFFLINE");
+    }
+
+    window.addEventListener("online", networkStatus);
+    window.addEventListener("offline", networkStatus);
+
+    testManifest();
+    testServiceWorker();
+    testDisplayMode();
+    networkStatus();
+  </script>
+</body>
+</html>
