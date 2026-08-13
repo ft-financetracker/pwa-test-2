@@ -196,6 +196,26 @@
     >
     </div>
 
+    <button
+      id="dashboardButton"
+      onclick="loadDashboard()"
+    >
+      Load Dashboard
+    </button>
+    
+    <div
+      id="dashboardResult"
+      class="status"
+    >
+      Dashboard: belum dimuat
+    </div>
+    
+    <div
+      id="dashboardContainer"
+      style="text-align:left;"
+    >
+    </div>
+
     <div
       id="apiResult"
       class="status"
@@ -691,6 +711,221 @@ function escapeHtml(value) {
       "&#039;"
     );
 
+}
+
+    function loadDashboard() {
+
+  const result =
+    document.getElementById(
+      "dashboardResult"
+    );
+
+  const container =
+    document.getElementById(
+      "dashboardContainer"
+    );
+
+
+  result.textContent =
+    "Dashboard: mengambil data...";
+
+  result.className =
+    "status";
+
+
+  container.innerHTML = "";
+
+
+  const callbackName =
+    "dashboardCallback_" +
+    Date.now();
+
+
+  window[callbackName] =
+    function(data) {
+
+      if (
+        data &&
+        data.success &&
+        data.data
+      ) {
+
+        const dashboard =
+          data.data;
+
+        const settings =
+          dashboard.settings || {};
+
+        const users =
+          dashboard.users || [];
+
+
+        result.textContent =
+          "Dashboard berhasil dimuat";
+
+        result.className =
+          "status ok";
+
+
+        // ==============================
+        // APP INFO
+        // ==============================
+
+        const appInfo =
+          document.createElement("div");
+
+        appInfo.className =
+          "status";
+
+        appInfo.innerHTML =
+          "<strong>" +
+          escapeHtml(
+            settings.app_name ||
+            "Unknown App"
+          ) +
+          "</strong><br>" +
+
+          "Version: " +
+          escapeHtml(
+            settings.app_version ||
+            "-"
+          ) +
+          "<br>" +
+
+          "Maintenance: " +
+          escapeHtml(
+            String(
+              settings.maintenance
+            )
+          );
+
+        container.appendChild(
+          appInfo
+        );
+
+
+        // ==============================
+        // USER COUNT
+        // ==============================
+
+        const count =
+          document.createElement("div");
+
+        count.className =
+          "status";
+
+        count.innerHTML =
+          "<strong>Users</strong><br>" +
+          escapeHtml(
+            String(
+              dashboard.userCount || 0
+            )
+          );
+
+        container.appendChild(
+          count
+        );
+
+
+        // ==============================
+        // USERS
+        // ==============================
+
+        users.forEach(
+          function(user) {
+
+            const item =
+              document.createElement(
+                "div"
+              );
+
+            item.className =
+              "status";
+
+            item.innerHTML =
+
+              "<strong>" +
+              escapeHtml(
+                user.name
+              ) +
+              "</strong><br>" +
+
+              escapeHtml(
+                user.email
+              ) +
+              "<br>" +
+
+              "Status: " +
+              escapeHtml(
+                user.status
+              );
+
+
+            container.appendChild(
+              item
+            );
+
+          }
+        );
+
+      } else {
+
+        result.textContent =
+          "Dashboard ERROR: " +
+          (
+            data &&
+            data.message
+              ? data.message
+              : "Unknown error"
+          );
+
+        result.className =
+          "status bad";
+      }
+
+
+      delete window[callbackName];
+
+
+      if (script) {
+        script.remove();
+      }
+
+    };
+
+
+  const script =
+    document.createElement(
+      "script"
+    );
+
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec" +
+    "?action=dashboard" +
+    "&callback=" +
+    callbackName;
+
+
+  script.onerror =
+    function() {
+
+      result.textContent =
+        "Dashboard ERROR: Connection error";
+
+      result.className =
+        "status bad";
+
+      delete window[callbackName];
+
+      script.remove();
+
+    };
+
+
+  document.body.appendChild(
+    script
+  );
 }
 
     function testDisplayMode() {
