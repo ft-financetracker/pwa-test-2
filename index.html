@@ -430,34 +430,35 @@
 
     }
 
-    function writeToSheets() {
+   function writeToSheets() {
 
   const result =
-    document.getElementById(
-      "writeResult"
-    );
+    document.getElementById("writeResult");
 
 
   result.textContent =
     "Write: mengirim data...";
-
 
   result.className =
     "status";
 
 
   const callbackName =
-    "writeCallback_" +
-    Date.now();
+    "writeCallback_" + Date.now();
 
 
   window[callbackName] =
-    function(data) {
+    function(response) {
 
       if (
-        data &&
-        data.success
+        response &&
+        response.success &&
+        response.data
       ) {
+
+        const data =
+          response.data;
+
 
         result.textContent =
           "WRITE BERHASIL! " +
@@ -472,9 +473,9 @@
         result.textContent =
           "WRITE ERROR: " +
           (
-            data &&
-            data.message
-              ? data.message
+            response &&
+            response.message
+              ? response.message
               : "Unknown error"
           );
 
@@ -495,9 +496,7 @@
 
 
   const script =
-    document.createElement(
-      "script"
-    );
+    document.createElement("script");
 
 
   script.src =
@@ -513,35 +512,28 @@
       result.textContent =
         "WRITE ERROR: Connection error";
 
-
       result.className =
         "status bad";
 
-
       delete window[callbackName];
-
 
       script.remove();
 
     };
 
 
-  document.body.appendChild(
-    script
-  );
+  document.body.appendChild(script);
 }
 
+    
     function readFromSheets() {
 
   const result =
-    document.getElementById(
-      "readResult"
-    );
+    document.getElementById("readResult");
+
 
   const container =
-    document.getElementById(
-      "dataContainer"
-    );
+    document.getElementById("dataContainer");
 
 
   result.textContent =
@@ -556,45 +548,53 @@
 
 
   const callbackName =
-    "readCallback_" +
-    Date.now();
+    "readCallback_" + Date.now();
 
 
   window[callbackName] =
-    function(data) {
+    function(response) {
 
       if (
-        data &&
-        data.success
+        response &&
+        response.success &&
+        response.data
       ) {
+
+        const data =
+          response.data;
+
+
+        const rows =
+          data.rows || [];
+
+
+        const count =
+          data.count || 0;
+
 
         result.textContent =
           "READ BERHASIL! " +
-          data.message +
+          "Data berhasil dibaca dari Google Sheets" +
           " | Total: " +
-          data.count;
+          count;
+
 
         result.className =
           "status ok";
 
 
-        if (
-          !data.rows ||
-          data.rows.length === 0
-        ) {
+        if (rows.length === 0) {
 
           container.innerHTML =
             "<p>Belum ada data.</p>";
 
         } else {
 
-          data.rows.forEach(
+          rows.forEach(
             function(row) {
 
               const item =
-                document.createElement(
-                  "div"
-                );
+                document.createElement("div");
 
 
               item.className =
@@ -603,10 +603,14 @@
 
               item.innerHTML =
                 "<strong>" +
-                escapeHtml(row.source) +
+                escapeHtml(
+                  row.source
+                ) +
                 "</strong><br>" +
 
-                escapeHtml(row.message) +
+                escapeHtml(
+                  row.message
+                ) +
                 "<br>" +
 
                 "<small>" +
@@ -630,15 +634,15 @@
         result.textContent =
           "READ ERROR: " +
           (
-            data &&
-            data.message
-              ? data.message
+            response &&
+            response.message
+              ? response.message
               : "Unknown error"
           );
 
+
         result.className =
           "status bad";
-
       }
 
 
@@ -653,9 +657,7 @@
 
 
   const script =
-    document.createElement(
-      "script"
-    );
+    document.createElement("script");
 
 
   script.src =
@@ -671,10 +673,13 @@
       result.textContent =
         "READ ERROR: Connection error";
 
+
       result.className =
         "status bad";
 
+
       delete window[callbackName];
+
 
       script.remove();
 
@@ -685,7 +690,6 @@
     script
   );
 }
-
 
 function escapeHtml(value) {
 
