@@ -2,6 +2,7 @@
 <html lang="id">
 
 <head>
+
   <meta charset="UTF-8">
 
   <meta
@@ -16,7 +17,7 @@
 
   <meta
     name="description"
-    content="PWA Test 3 - Google Apps Script"
+    content="PWA Test 6 - Google Apps Script"
   >
 
   <link
@@ -24,7 +25,7 @@
     href="./manifest.json"
   >
 
-  <title>PWA Test 3</title>
+  <title>PWA Test 6</title>
 
   <style>
 
@@ -119,12 +120,16 @@
 
   <main class="card">
 
-    <h1>PWA Test 3</h1>
+    <h1>PWA Test 6</h1>
 
     <p>
       PWA → Apps Script → Google Sheets
     </p>
 
+
+    <!-- ========================= -->
+    <!-- PWA STATUS -->
+    <!-- ========================= -->
 
     <div
       id="manifest"
@@ -155,6 +160,10 @@
     </p>
 
 
+    <!-- ========================= -->
+    <!-- APPS SCRIPT -->
+    <!-- ========================= -->
+
     <button
       id="apiButton"
       onclick="testAppsScript()"
@@ -162,79 +171,6 @@
       Test Google Apps Script
     </button>
 
-    <button
-      id="writeButton"
-      onclick="writeToSheets()"
-    >
-      Test Write ke Google Sheets
-    </button>
-    
-    <div
-      id="writeResult"
-      class="status"
-    >
-      Write: belum ditest
-    </div>
-
-    <button
-      id="readButton"
-      onclick="readFromSheets()"
-    >
-      Baca Data dari Google Sheets
-    </button>
-    
-    <div
-      id="readResult"
-      class="status"
-    >
-      Read: belum ditest
-    </div>
-    
-    <div
-      id="dataContainer"
-      style="text-align:left;"
-    >
-    </div>
-
-    <button
-  id="transactionButton"
-  onclick="loadTransactions()"
->
-  Lihat Transactions
-</button>
-
-<div
-  id="transactionResult"
-  class="status"
->
-  Transactions: belum dimuat
-</div>
-
-<div
-  id="transactionContainer"
-  style="text-align:left;"
->
-</div>
-
-    <button
-      id="dashboardButton"
-      onclick="loadDashboard()"
-    >
-      Load Dashboard
-    </button>
-    
-    <div
-      id="dashboardResult"
-      class="status"
-    >
-      Dashboard: belum dimuat
-    </div>
-    
-    <div
-      id="dashboardContainer"
-      style="text-align:left;"
-    >
-    </div>
 
     <div
       id="apiResult"
@@ -243,217 +179,357 @@
       Apps Script: belum ditest
     </div>
 
+
+    <!-- ========================= -->
+    <!-- WRITE -->
+    <!-- ========================= -->
+
+    <button
+      id="writeButton"
+      onclick="writeToSheets()"
+    >
+      Test Write ke Google Sheets
+    </button>
+
+
+    <div
+      id="writeResult"
+      class="status"
+    >
+      Write: belum ditest
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- READ -->
+    <!-- ========================= -->
+
+    <button
+      id="readButton"
+      onclick="readFromSheets()"
+    >
+      Baca Data dari Google Sheets
+    </button>
+
+
+    <div
+      id="readResult"
+      class="status"
+    >
+      Read: belum ditest
+    </div>
+
+
+    <div
+      id="dataContainer"
+      style="text-align:left;"
+    >
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- DASHBOARD -->
+    <!-- ========================= -->
+
+    <button
+      id="dashboardButton"
+      onclick="loadDashboard()"
+    >
+      Load Dashboard
+    </button>
+
+
+    <div
+      id="dashboardResult"
+      class="status"
+    >
+      Dashboard: belum dimuat
+    </div>
+
+
+    <div
+      id="dashboardContainer"
+      style="text-align:left;"
+    >
+    </div>
+
+
+    <!-- ========================= -->
+    <!-- TRANSACTIONS -->
+    <!-- ========================= -->
+
+    <button
+      id="transactionButton"
+      onclick="loadTransactions()"
+    >
+      Lihat Transactions
+    </button>
+
+
+    <div
+      id="transactionResult"
+      class="status"
+    >
+      Transactions: belum dimuat
+    </div>
+
+
+    <div
+      id="transactionContainer"
+      style="text-align:left;"
+    >
+    </div>
+
+
   </main>
 
 
-  <script>
-
-    function setStatus(id, ok, text) {
-
-      const el =
-        document.getElementById(id);
-
-      el.textContent = text;
-
-      el.className =
-        "status " +
-        (ok ? "ok" : "bad");
-    }
+<script>
 
 
-    async function testManifest() {
+/* ==========================================
+   CONFIG
+========================================== */
 
-      try {
-
-        const response =
-          await fetch(
-            "./manifest.json",
-            {
-              cache: "no-store"
-            }
-          );
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec";
 
 
-        const manifest =
-          await response.json();
+/* ==========================================
+   STATUS HELPER
+========================================== */
+
+function setStatus(id, ok, text) {
+
+  const el =
+    document.getElementById(id);
+
+  el.textContent =
+    text;
+
+  el.className =
+    "status " +
+    (ok ? "ok" : "bad");
+}
 
 
-        const ok =
-          !!manifest.name &&
-          !!manifest.start_url &&
-          !!manifest.icons;
+/* ==========================================
+   MANIFEST
+========================================== */
+
+async function testManifest() {
+
+  try {
+
+    const response =
+      await fetch(
+        "./manifest.json",
+        {
+          cache: "no-store"
+        }
+      );
 
 
-        setStatus(
-          "manifest",
-          ok,
-          ok
-            ? "Manifest: OK"
-            : "Manifest: ERROR"
-        );
-
-      } catch (e) {
-
-        setStatus(
-          "manifest",
-          false,
-          "Manifest: ERROR"
-        );
-
-      }
-
-    }
+    const manifest =
+      await response.json();
 
 
-    async function testServiceWorker() {
+    const ok =
+      !!manifest.name &&
+      !!manifest.start_url &&
+      !!manifest.icons;
+
+
+    setStatus(
+      "manifest",
+      ok,
+      ok
+        ? "Manifest: OK"
+        : "Manifest: ERROR"
+    );
+
+
+  } catch (e) {
+
+    setStatus(
+      "manifest",
+      false,
+      "Manifest: ERROR"
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   SERVICE WORKER
+========================================== */
+
+async function testServiceWorker() {
+
+  if (
+    !("serviceWorker" in navigator)
+  ) {
+
+    setStatus(
+      "sw",
+      false,
+      "Service Worker: tidak didukung"
+    );
+
+    return;
+  }
+
+
+  try {
+
+    const registration =
+      await navigator.serviceWorker.register(
+        "./service-worker.js"
+      );
+
+
+    await navigator.serviceWorker.ready;
+
+
+    setStatus(
+      "sw",
+      true,
+      "Service Worker: AKTIF (" +
+      registration.scope +
+      ")"
+    );
+
+
+  } catch (e) {
+
+    setStatus(
+      "sw",
+      false,
+      "Service Worker: ERROR — " +
+      e.message
+    );
+
+  }
+
+}
+
+
+/* ==========================================
+   APPS SCRIPT HEALTH
+========================================== */
+
+function testAppsScript() {
+
+  const result =
+    document.getElementById(
+      "apiResult"
+    );
+
+
+  result.textContent =
+    "Apps Script: connecting...";
+
+  result.className =
+    "status";
+
+
+  const callbackName =
+    "pwaCallback_" +
+    Date.now();
+
+
+  window[callbackName] =
+    function(data) {
 
       if (
-        !("serviceWorker" in navigator)
+        data &&
+        data.success
       ) {
 
-        setStatus(
-          "sw",
-          false,
-          "Service Worker: tidak didukung"
-        );
-
-        return;
-      }
+        result.textContent =
+          "Apps Script: CONNECTED | " +
+          data.message +
+          " | Spreadsheet: " +
+          data.spreadsheet;
 
 
-      try {
-
-        const registration =
-          await navigator.serviceWorker.register(
-            "./service-worker.js"
-          );
+        result.className =
+          "status ok";
 
 
-        await navigator.serviceWorker.ready;
+      } else {
+
+        result.textContent =
+          "Apps Script: ERROR";
 
 
-        setStatus(
-          "sw",
-          true,
-          "Service Worker: AKTIF (" +
-          registration.scope +
-          ")"
-        );
-
-      } catch (e) {
-
-        setStatus(
-          "sw",
-          false,
-          "Service Worker: ERROR — " +
-          e.message
-        );
+        result.className =
+          "status bad";
 
       }
 
-    }
+
+      delete window[callbackName];
 
 
-    function testAppsScript() {
+      if (script) {
+        script.remove();
+      }
 
-      const result =
-        document.getElementById(
-          "apiResult"
-        );
+    };
 
+
+  const script =
+    document.createElement(
+      "script"
+    );
+
+
+  script.src =
+    API_URL +
+    "?action=health" +
+    "&callback=" +
+    callbackName;
+
+
+  script.onerror =
+    function() {
 
       result.textContent =
-        "Apps Script: connecting...";
+        "Apps Script: CONNECTION ERROR";
 
 
       result.className =
-        "status";
+        "status bad";
 
 
-      const callbackName =
-        "pwaCallback_" +
-        Date.now();
+      delete window[callbackName];
 
 
-      window[callbackName] =
-        function(data) {
+      script.remove();
 
-          if (
-            data &&
-            data.success
-          ) {
-
-            result.textContent =
-              "Apps Script: CONNECTED | " +
-              data.message +
-              " | Spreadsheet: " +
-              data.spreadsheet;
+    };
 
 
-            result.className =
-              "status ok";
+  document.body.appendChild(
+    script
+  );
 
-          } else {
-
-            result.textContent =
-              "Apps Script: ERROR";
+}
 
 
-            result.className =
-              "status bad";
+/* ==========================================
+   WRITE
+========================================== */
 
-          }
-
-
-          delete window[callbackName];
-
-          if (script) {
-            script.remove();
-          }
-
-        };
-
-
-      const script =
-        document.createElement(
-          "script"
-        );
-
-
-      script.src =
-        "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec" +
-        "?callback=" +
-        callbackName;
-
-
-      script.onerror =
-        function() {
-
-          result.textContent =
-            "Apps Script: CONNECTION ERROR";
-
-
-          result.className =
-            "status bad";
-
-
-          delete window[callbackName];
-
-          script.remove();
-
-        };
-
-
-      document.body.appendChild(
-        script
-      );
-
-    }
-
-   function writeToSheets() {
+function writeToSheets() {
 
   const result =
-    document.getElementById("writeResult");
+    document.getElementById(
+      "writeResult"
+    );
 
 
   result.textContent =
@@ -464,7 +540,8 @@
 
 
   const callbackName =
-    "writeCallback_" + Date.now();
+    "writeCallback_" +
+    Date.now();
 
 
   window[callbackName] =
@@ -488,6 +565,7 @@
         result.className =
           "status ok";
 
+
       } else {
 
         result.textContent =
@@ -502,6 +580,7 @@
 
         result.className =
           "status bad";
+
       }
 
 
@@ -516,11 +595,13 @@
 
 
   const script =
-    document.createElement("script");
+    document.createElement(
+      "script"
+    );
 
 
   script.src =
-    "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec" +
+    API_URL +
     "?action=write" +
     "&callback=" +
     callbackName;
@@ -532,28 +613,42 @@
       result.textContent =
         "WRITE ERROR: Connection error";
 
+
       result.className =
         "status bad";
 
+
       delete window[callbackName];
+
 
       script.remove();
 
     };
 
 
-  document.body.appendChild(script);
+  document.body.appendChild(
+    script
+  );
+
 }
 
-    
-    function readFromSheets() {
+
+/* ==========================================
+   READ PWA_TEST
+========================================== */
+
+function readFromSheets() {
 
   const result =
-    document.getElementById("readResult");
+    document.getElementById(
+      "readResult"
+    );
 
 
   const container =
-    document.getElementById("dataContainer");
+    document.getElementById(
+      "dataContainer"
+    );
 
 
   result.textContent =
@@ -568,7 +663,8 @@
 
 
   const callbackName =
-    "readCallback_" + Date.now();
+    "readCallback_" +
+    Date.now();
 
 
   window[callbackName] =
@@ -603,7 +699,9 @@
           "status ok";
 
 
-        if (rows.length === 0) {
+        if (
+          rows.length === 0
+        ) {
 
           container.innerHTML =
             "<p>Belum ada data.</p>";
@@ -614,7 +712,9 @@
             function(row) {
 
               const item =
-                document.createElement("div");
+                document.createElement(
+                  "div"
+                );
 
 
               item.className =
@@ -649,6 +749,7 @@
 
         }
 
+
       } else {
 
         result.textContent =
@@ -663,6 +764,7 @@
 
         result.className =
           "status bad";
+
       }
 
 
@@ -677,11 +779,13 @@
 
 
   const script =
-    document.createElement("script");
+    document.createElement(
+      "script"
+    );
 
 
   script.src =
-    "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec" +
+    API_URL +
     "?action=read" +
     "&callback=" +
     callbackName;
@@ -709,40 +813,21 @@
   document.body.appendChild(
     script
   );
-}
-
-function escapeHtml(value) {
-
-  return String(value)
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-    .replace(
-      /</g,
-      "&lt;"
-    )
-    .replace(
-      />/g,
-      "&gt;"
-    )
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-    .replace(
-      /'/g,
-      "&#039;"
-    );
 
 }
 
-    function loadDashboard() {
+
+/* ==========================================
+   DASHBOARD
+========================================== */
+
+function loadDashboard() {
 
   const result =
     document.getElementById(
       "dashboardResult"
     );
+
 
   const container =
     document.getElementById(
@@ -757,7 +842,8 @@ function escapeHtml(value) {
     "status";
 
 
-  container.innerHTML = "";
+  container.innerHTML =
+    "";
 
 
   const callbackName =
@@ -777,8 +863,10 @@ function escapeHtml(value) {
         const dashboard =
           data.data;
 
+
         const settings =
           dashboard.settings || {};
+
 
         const users =
           dashboard.users || [];
@@ -787,19 +875,20 @@ function escapeHtml(value) {
         result.textContent =
           "Dashboard berhasil dimuat";
 
+
         result.className =
           "status ok";
 
 
-        // ==============================
-        // APP INFO
-        // ==============================
-
         const appInfo =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
+
 
         appInfo.className =
           "status";
+
 
         appInfo.innerHTML =
           "<strong>" +
@@ -823,37 +912,36 @@ function escapeHtml(value) {
             )
           );
 
+
         container.appendChild(
           appInfo
         );
 
 
-        // ==============================
-        // USER COUNT
-        // ==============================
-
         const count =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
+
 
         count.className =
           "status";
 
+
         count.innerHTML =
           "<strong>Users</strong><br>" +
+
           escapeHtml(
             String(
               dashboard.userCount || 0
             )
           );
 
+
         container.appendChild(
           count
         );
 
-
-        // ==============================
-        // USERS
-        // ==============================
 
         users.forEach(
           function(user) {
@@ -863,11 +951,12 @@ function escapeHtml(value) {
                 "div"
               );
 
+
             item.className =
               "status";
 
-            item.innerHTML =
 
+            item.innerHTML =
               "<strong>" +
               escapeHtml(
                 user.name
@@ -892,6 +981,7 @@ function escapeHtml(value) {
           }
         );
 
+
       } else {
 
         result.textContent =
@@ -903,8 +993,10 @@ function escapeHtml(value) {
               : "Unknown error"
           );
 
+
         result.className =
           "status bad";
+
       }
 
 
@@ -925,7 +1017,7 @@ function escapeHtml(value) {
 
 
   script.src =
-    "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec" +
+    API_URL +
     "?action=dashboard" +
     "&callback=" +
     callbackName;
@@ -937,10 +1029,13 @@ function escapeHtml(value) {
       result.textContent =
         "Dashboard ERROR: Connection error";
 
+
       result.className =
         "status bad";
 
+
       delete window[callbackName];
+
 
       script.remove();
 
@@ -950,14 +1045,21 @@ function escapeHtml(value) {
   document.body.appendChild(
     script
   );
+
 }
 
-    function loadTransactions() {
+
+/* ==========================================
+   TRANSACTIONS
+========================================== */
+
+function loadTransactions() {
 
   const result =
     document.getElementById(
       "transactionResult"
     );
+
 
   const container =
     document.getElementById(
@@ -1008,7 +1110,9 @@ function escapeHtml(value) {
           "status ok";
 
 
-        if (rows.length === 0) {
+        if (
+          rows.length === 0
+        ) {
 
           container.innerHTML =
             "<p>Belum ada transaksi.</p>";
@@ -1080,6 +1184,7 @@ function escapeHtml(value) {
 
         }
 
+
       } else {
 
         result.textContent =
@@ -1094,6 +1199,7 @@ function escapeHtml(value) {
 
         result.className =
           "status bad";
+
       }
 
 
@@ -1114,7 +1220,7 @@ function escapeHtml(value) {
 
 
   script.src =
-    "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec" +
+    API_URL +
     "?action=transactions" +
     "&callback=" +
     callbackName;
@@ -1126,10 +1232,13 @@ function escapeHtml(value) {
       result.textContent =
         "TRANSACTIONS ERROR: Connection error";
 
+
       result.className =
         "status bad";
 
+
       delete window[callbackName];
+
 
       script.remove();
 
@@ -1139,63 +1248,114 @@ function escapeHtml(value) {
   document.body.appendChild(
     script
   );
+
 }
 
-    function testDisplayMode() {
 
-      const standalone =
-        window.matchMedia(
-          "(display-mode: standalone)"
-        ).matches;
+/* ==========================================
+   ESCAPE HTML
+========================================== */
 
+function escapeHtml(value) {
 
-      setStatus(
-        "mode",
-        true,
-        standalone
-          ? "Display mode: STANDALONE (PWA)"
-          : "Display mode: BROWSER"
-      );
+  return String(value)
 
-    }
+    .replace(
+      /&/g,
+      "&amp;"
+    )
 
+    .replace(
+      /</g,
+      "&lt;"
+    )
 
-    function networkStatus() {
+    .replace(
+      />/g,
+      "&gt;"
+    )
 
-      document.getElementById(
-        "offline"
-      ).textContent =
-        "Status jaringan: " +
-        (
-          navigator.onLine
-            ? "ONLINE"
-            : "OFFLINE"
-        );
+    .replace(
+      /"/g,
+      "&quot;"
+    )
 
-    }
-
-
-    window.addEventListener(
-      "online",
-      networkStatus
+    .replace(
+      /'/g,
+      "&#039;"
     );
 
+}
 
-    window.addEventListener(
-      "offline",
-      networkStatus
+
+/* ==========================================
+   DISPLAY MODE
+========================================== */
+
+function testDisplayMode() {
+
+  const standalone =
+    window.matchMedia(
+      "(display-mode: standalone)"
+    ).matches;
+
+
+  setStatus(
+    "mode",
+    true,
+    standalone
+      ? "Display mode: STANDALONE (PWA)"
+      : "Display mode: BROWSER"
+  );
+
+}
+
+
+/* ==========================================
+   NETWORK
+========================================== */
+
+function networkStatus() {
+
+  document.getElementById(
+    "offline"
+  ).textContent =
+    "Status jaringan: " +
+    (
+      navigator.onLine
+        ? "ONLINE"
+        : "OFFLINE"
     );
 
+}
 
-    testManifest();
 
-    testServiceWorker();
+window.addEventListener(
+  "online",
+  networkStatus
+);
 
-    testDisplayMode();
 
-    networkStatus();
+window.addEventListener(
+  "offline",
+  networkStatus
+);
 
-  </script>
+
+/* ==========================================
+   START
+========================================== */
+
+testManifest();
+
+testServiceWorker();
+
+testDisplayMode();
+
+networkStatus();
+
+
+</script>
 
 </body>
 
