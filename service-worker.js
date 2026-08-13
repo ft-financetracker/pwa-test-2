@@ -1,4 +1,4 @@
-const CACHE_NAME = "pwa-test-2-v1";
+const CACHE_NAME = "pwa-test-3-v1";
 
 const APP_SHELL = [
   "./",
