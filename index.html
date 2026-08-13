@@ -162,6 +162,20 @@
       Test Google Apps Script
     </button>
 
+    <button
+      id="writeButton"
+      onclick="writeToSheets()"
+    >
+      Test Write ke Google Sheets
+    </button>
+    
+    <div
+      id="writeResult"
+      class="status"
+    >
+      Write: belum ditest
+    </div>
+
 
     <div
       id="apiResult"
@@ -377,6 +391,106 @@
 
     }
 
+    function writeToSheets() {
+
+  const result =
+    document.getElementById(
+      "writeResult"
+    );
+
+
+  result.textContent =
+    "Write: mengirim data...";
+
+
+  result.className =
+    "status";
+
+
+  const callbackName =
+    "writeCallback_" +
+    Date.now();
+
+
+  window[callbackName] =
+    function(data) {
+
+      if (
+        data &&
+        data.success
+      ) {
+
+        result.textContent =
+          "WRITE BERHASIL! " +
+          data.message;
+
+
+        result.className =
+          "status ok";
+
+      } else {
+
+        result.textContent =
+          "WRITE ERROR: " +
+          (
+            data &&
+            data.message
+              ? data.message
+              : "Unknown error"
+          );
+
+
+        result.className =
+          "status bad";
+      }
+
+
+      delete window[callbackName];
+
+
+      if (script) {
+        script.remove();
+      }
+
+    };
+
+
+  const script =
+    document.createElement(
+      "script"
+    );
+
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec" +
+    "?action=write" +
+    "&callback=" +
+    callbackName;
+
+
+  script.onerror =
+    function() {
+
+      result.textContent =
+        "WRITE ERROR: Connection error";
+
+
+      result.className =
+        "status bad";
+
+
+      delete window[callbackName];
+
+
+      script.remove();
+
+    };
+
+
+  document.body.appendChild(
+    script
+  );
+}
 
     function testDisplayMode() {
 
