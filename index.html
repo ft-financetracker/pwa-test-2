@@ -197,6 +197,26 @@
     </div>
 
     <button
+  id="transactionButton"
+  onclick="loadTransactions()"
+>
+  Lihat Transactions
+</button>
+
+<div
+  id="transactionResult"
+  class="status"
+>
+  Transactions: belum dimuat
+</div>
+
+<div
+  id="transactionContainer"
+  style="text-align:left;"
+>
+</div>
+
+    <button
       id="dashboardButton"
       onclick="loadDashboard()"
     >
@@ -916,6 +936,195 @@ function escapeHtml(value) {
 
       result.textContent =
         "Dashboard ERROR: Connection error";
+
+      result.className =
+        "status bad";
+
+      delete window[callbackName];
+
+      script.remove();
+
+    };
+
+
+  document.body.appendChild(
+    script
+  );
+}
+
+    function loadTransactions() {
+
+  const result =
+    document.getElementById(
+      "transactionResult"
+    );
+
+  const container =
+    document.getElementById(
+      "transactionContainer"
+    );
+
+
+  result.textContent =
+    "Transactions: membaca data...";
+
+  result.className =
+    "status";
+
+
+  container.innerHTML =
+    "";
+
+
+  const callbackName =
+    "transactionCallback_" +
+    Date.now();
+
+
+  window[callbackName] =
+    function(response) {
+
+      if (
+        response &&
+        response.success &&
+        response.data
+      ) {
+
+        const data =
+          response.data;
+
+
+        const rows =
+          data.rows || [];
+
+
+        result.textContent =
+          "TRANSACTIONS BERHASIL! " +
+          "Total: " +
+          data.count;
+
+
+        result.className =
+          "status ok";
+
+
+        if (rows.length === 0) {
+
+          container.innerHTML =
+            "<p>Belum ada transaksi.</p>";
+
+        } else {
+
+          rows.forEach(
+            function(transaction) {
+
+              const item =
+                document.createElement(
+                  "div"
+                );
+
+
+              item.className =
+                "status";
+
+
+              const amount =
+                Number(
+                  transaction.amount || 0
+                );
+
+
+              item.innerHTML =
+
+                "<strong>" +
+                escapeHtml(
+                  transaction.category
+                ) +
+                "</strong><br>" +
+
+                escapeHtml(
+                  transaction.description
+                ) +
+                "<br>" +
+
+                "Type: " +
+                escapeHtml(
+                  transaction.type
+                ) +
+                "<br>" +
+
+                "Amount: Rp " +
+                amount.toLocaleString(
+                  "id-ID"
+                ) +
+                "<br>" +
+
+                "Date: " +
+                escapeHtml(
+                  transaction.date
+                ) +
+                "<br>" +
+
+                "Status: " +
+                escapeHtml(
+                  transaction.status
+                );
+
+
+              container.appendChild(
+                item
+              );
+
+            }
+          );
+
+        }
+
+      } else {
+
+        result.textContent =
+          "TRANSACTIONS ERROR: " +
+          (
+            response &&
+            response.message
+              ? response.message
+              : "Unknown error"
+          );
+
+
+        result.className =
+          "status bad";
+      }
+
+
+      delete window[callbackName];
+
+
+      if (script) {
+        script.remove();
+      }
+
+    };
+
+
+  const script =
+    document.createElement(
+      "script"
+    );
+
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec" +
+    "?action=transactions" +
+    "&callback=" +
+    callbackName;
+
+
+  script.onerror =
+    function() {
+
+      result.textContent =
+        "TRANSACTIONS ERROR: Connection error";
 
       result.className =
         "status bad";
