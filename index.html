@@ -253,6 +253,414 @@
     >
     </div>
 
+    <!-- ========================= -->
+<!-- ADD TRANSACTION -->
+<!-- ========================= -->
+
+<h2>Tambah Transaksi</h2>
+
+<form
+  id="transactionForm"
+  onsubmit="submitTransaction(event)"
+>
+
+  <div
+    class="status"
+    style="text-align:left;"
+  >
+
+    <label>
+      Type
+    </label>
+
+    <select
+      id="transactionType"
+      required
+      style="
+        width:100%;
+        padding:12px;
+        margin-top:6px;
+        margin-bottom:12px;
+        border-radius:10px;
+        border:1px solid #ddd;
+        font-size:16px;
+      "
+    >
+
+      <option value="EXPENSE">
+        EXPENSE
+      </option>
+
+      <option value="INCOME">
+        INCOME
+      </option>
+
+    </select>
+
+
+    <label>
+      Category
+    </label>
+
+    <input
+      id="transactionCategory"
+      type="text"
+      placeholder="Contoh: Food"
+      required
+      style="
+        width:100%;
+        padding:12px;
+        margin-top:6px;
+        margin-bottom:12px;
+        border-radius:10px;
+        border:1px solid #ddd;
+        font-size:16px;
+      "
+    >
+
+
+    <label>
+      Description
+    </label>
+
+    <input
+      id="transactionDescription"
+      type="text"
+      placeholder="Contoh: Makan siang"
+      required
+      style="
+        width:100%;
+        padding:12px;
+        margin-top:6px;
+        margin-bottom:12px;
+        border-radius:10px;
+        border:1px solid #ddd;
+        font-size:16px;
+      "
+    >
+
+
+    <label>
+      Amount
+    </label>
+
+    <input
+      id="transactionAmount"
+      type="number"
+      min="1"
+      step="1"
+      placeholder="25000"
+      required
+      style="
+        width:100%;
+        padding:12px;
+        margin-top:6px;
+        margin-bottom:12px;
+        border-radius:10px;
+        border:1px solid #ddd;
+        font-size:16px;
+      "
+    >
+
+
+    <button
+      type="submit"
+    >
+      Simpan Transaksi
+    </button>
+
+  </div>
+
+</form>
+
+
+<div
+  id="addTransactionResult"
+  class="status"
+>
+  Transaksi: belum disimpan
+</div>
+
+    /* ==========================================
+   ADD TRANSACTION
+========================================== */
+
+function submitTransaction(event) {
+
+  event.preventDefault();
+
+
+  const result =
+    document.getElementById(
+      "addTransactionResult"
+    );
+
+
+  const type =
+    document.getElementById(
+      "transactionType"
+    ).value;
+
+
+  const category =
+    document.getElementById(
+      "transactionCategory"
+    ).value.trim();
+
+
+  const description =
+    document.getElementById(
+      "transactionDescription"
+    ).value.trim();
+
+
+  const amount =
+    Number(
+      document.getElementById(
+        "transactionAmount"
+      ).value
+    );
+
+
+  /* ==========================
+     VALIDASI
+  ========================== */
+
+  if (!type) {
+
+    result.textContent =
+      "ERROR: Type wajib dipilih";
+
+    result.className =
+      "status bad";
+
+    return;
+  }
+
+
+  if (!category) {
+
+    result.textContent =
+      "ERROR: Category wajib diisi";
+
+    result.className =
+      "status bad";
+
+    return;
+  }
+
+
+  if (!description) {
+
+    result.textContent =
+      "ERROR: Description wajib diisi";
+
+    result.className =
+      "status bad";
+
+    return;
+  }
+
+
+  if (
+    !Number.isFinite(amount) ||
+    amount <= 0
+  ) {
+
+    result.textContent =
+      "ERROR: Amount harus lebih dari 0";
+
+    result.className =
+      "status bad";
+
+    return;
+  }
+
+
+  /* ==========================
+     STATUS
+  ========================== */
+
+  result.textContent =
+    "Transaksi: menyimpan...";
+
+  result.className =
+    "status";
+
+
+  const callbackName =
+    "addTransactionCallback_" +
+    Date.now();
+
+
+  /* ==========================
+     CALLBACK
+  ========================== */
+
+  window[callbackName] =
+    function(response) {
+
+      if (
+        response &&
+        response.success &&
+        response.data
+      ) {
+
+        const data =
+          response.data;
+
+
+        result.innerHTML =
+          "<strong>" +
+          "TRANSAKSI BERHASIL DISIMPAN" +
+          "</strong><br><br>" +
+
+          "ID: " +
+          escapeHtml(
+            data.id
+          ) +
+          "<br>" +
+
+          escapeHtml(
+            data.category
+          ) +
+          "<br>" +
+
+          escapeHtml(
+            data.description
+          ) +
+          "<br>" +
+
+          escapeHtml(
+            data.type
+          ) +
+          "<br>" +
+
+          "Rp " +
+          Number(
+            data.amount || 0
+          ).toLocaleString(
+            "id-ID"
+          );
+
+
+        result.className =
+          "status ok";
+
+
+        /* ======================
+           RESET FORM
+        ====================== */
+
+        document
+          .getElementById(
+            "transactionForm"
+          )
+          .reset();
+
+
+        /* ======================
+           REFRESH TRANSACTIONS
+        ====================== */
+
+        loadTransactions();
+
+
+      } else {
+
+        result.textContent =
+          "TRANSAKSI ERROR: " +
+          (
+            response &&
+            response.message
+              ? response.message
+              : "Unknown error"
+          );
+
+
+        result.className =
+          "status bad";
+
+      }
+
+
+      delete window[callbackName];
+
+
+      if (script) {
+        script.remove();
+      }
+
+    };
+
+
+  /* ==========================
+     JSONP SCRIPT
+  ========================== */
+
+  const script =
+    document.createElement(
+      "script"
+    );
+
+
+  script.src =
+    API_URL +
+
+    "?action=addTransaction" +
+
+    "&type=" +
+    encodeURIComponent(
+      type
+    ) +
+
+    "&category=" +
+    encodeURIComponent(
+      category
+    ) +
+
+    "&description=" +
+    encodeURIComponent(
+      description
+    ) +
+
+    "&amount=" +
+    encodeURIComponent(
+      amount
+    ) +
+
+    "&callback=" +
+    callbackName;
+
+
+  /* ==========================
+     ERROR
+  ========================== */
+
+  script.onerror =
+    function() {
+
+      result.textContent =
+        "TRANSAKSI ERROR: Connection error";
+
+
+      result.className =
+        "status bad";
+
+
+      delete window[callbackName];
+
+
+      script.remove();
+
+    };
+
+
+  document.body.appendChild(
+    script
+  );
+
+}
 
     <!-- ========================= -->
     <!-- TRANSACTIONS -->
