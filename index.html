@@ -176,6 +176,25 @@
       Write: belum ditest
     </div>
 
+    <button
+      id="readButton"
+      onclick="readFromSheets()"
+    >
+      Baca Data dari Google Sheets
+    </button>
+    
+    <div
+      id="readResult"
+      class="status"
+    >
+      Read: belum ditest
+    </div>
+    
+    <div
+      id="dataContainer"
+      style="text-align:left;"
+    >
+    </div>
 
     <div
       id="apiResult"
@@ -490,6 +509,188 @@
   document.body.appendChild(
     script
   );
+}
+
+    function readFromSheets() {
+
+  const result =
+    document.getElementById(
+      "readResult"
+    );
+
+  const container =
+    document.getElementById(
+      "dataContainer"
+    );
+
+
+  result.textContent =
+    "Read: membaca Google Sheets...";
+
+  result.className =
+    "status";
+
+
+  container.innerHTML =
+    "";
+
+
+  const callbackName =
+    "readCallback_" +
+    Date.now();
+
+
+  window[callbackName] =
+    function(data) {
+
+      if (
+        data &&
+        data.success
+      ) {
+
+        result.textContent =
+          "READ BERHASIL! " +
+          data.message +
+          " | Total: " +
+          data.count;
+
+        result.className =
+          "status ok";
+
+
+        if (
+          !data.rows ||
+          data.rows.length === 0
+        ) {
+
+          container.innerHTML =
+            "<p>Belum ada data.</p>";
+
+        } else {
+
+          data.rows.forEach(
+            function(row) {
+
+              const item =
+                document.createElement(
+                  "div"
+                );
+
+
+              item.className =
+                "status";
+
+
+              item.innerHTML =
+                "<strong>" +
+                escapeHtml(row.source) +
+                "</strong><br>" +
+
+                escapeHtml(row.message) +
+                "<br>" +
+
+                "<small>" +
+                escapeHtml(
+                  row.timestamp
+                ) +
+                "</small>";
+
+
+              container.appendChild(
+                item
+              );
+
+            }
+          );
+
+        }
+
+      } else {
+
+        result.textContent =
+          "READ ERROR: " +
+          (
+            data &&
+            data.message
+              ? data.message
+              : "Unknown error"
+          );
+
+        result.className =
+          "status bad";
+
+      }
+
+
+      delete window[callbackName];
+
+
+      if (script) {
+        script.remove();
+      }
+
+    };
+
+
+  const script =
+    document.createElement(
+      "script"
+    );
+
+
+  script.src =
+    "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec" +
+    "?action=read" +
+    "&callback=" +
+    callbackName;
+
+
+  script.onerror =
+    function() {
+
+      result.textContent =
+        "READ ERROR: Connection error";
+
+      result.className =
+        "status bad";
+
+      delete window[callbackName];
+
+      script.remove();
+
+    };
+
+
+  document.body.appendChild(
+    script
+  );
+}
+
+
+function escapeHtml(value) {
+
+  return String(value)
+    .replace(
+      /&/g,
+      "&amp;"
+    )
+    .replace(
+      /</g,
+      "&lt;"
+    )
+    .replace(
+      />/g,
+      "&gt;"
+    )
+    .replace(
+      /"/g,
+      "&quot;"
+    )
+    .replace(
+      /'/g,
+      "&#039;"
+    );
+
 }
 
     function testDisplayMode() {
