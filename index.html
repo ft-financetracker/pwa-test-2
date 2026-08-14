@@ -3205,7 +3205,10 @@ select {
             ) {
 
               container.innerHTML =
-                "<p>Belum ada transaksi.</p>";
+                "<div class='empty-state'>" +
+                "<strong>Belum ada transaksi</strong><br>" +
+                "Tambahkan transaksi baru atau ubah filter periode." +
+                "</div>";
 
             } else {
 
