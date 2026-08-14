@@ -163,6 +163,10 @@
       background: #4b5563;
     }
 
+    .button-danger {
+      background: #b91c1c;
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -433,6 +437,16 @@
       class="status"
     >
       Transactions: belum dimuat
+    </div>
+
+
+    <div
+      id="deleteTransactionResult"
+      class="status"
+      role="status"
+      aria-live="polite"
+      hidden
+    >
     </div>
 
 
@@ -1658,6 +1672,158 @@
 
 
     /* ==========================================
+       DELETE TRANSACTION
+    ========================================== */
+
+    function deleteTransactionById(id) {
+
+      const transactionId =
+        String(id || "").trim();
+
+
+      if (!transactionId) {
+        return;
+      }
+
+
+      const confirmed =
+        window.confirm(
+          "Yakin ingin menghapus transaksi ini?"
+        );
+
+
+      if (!confirmed) {
+        return;
+      }
+
+
+      const result =
+        document.getElementById(
+          "deleteTransactionResult"
+        );
+
+
+      result.hidden = false;
+
+
+      result.textContent =
+        "Transactions: menghapus...";
+
+
+      result.className =
+        "status";
+
+
+      const callbackName =
+        "deleteTransactionCallback_" +
+        Date.now();
+
+
+      let script = null;
+
+
+      window[callbackName] =
+        function(response) {
+
+          if (
+            response &&
+            response.success &&
+            response.data
+          ) {
+
+            result.textContent =
+              "DELETE BERHASIL: " +
+              String(response.data.id || transactionId);
+
+
+            result.className =
+              "status ok";
+
+
+            if (
+              editingTransactionId === transactionId
+            ) {
+              resetTransactionForm();
+            }
+
+
+            loadTransactions();
+
+
+          } else {
+
+            result.textContent =
+              "DELETE ERROR: " +
+              (
+                response &&
+                response.message
+                  ? response.message
+                  : "Unknown error"
+              );
+
+
+            result.className =
+              "status bad";
+
+          }
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      script =
+        document.createElement(
+          "script"
+        );
+
+
+      script.src =
+        API_URL +
+        "?action=deleteTransaction" +
+        "&id=" +
+        encodeURIComponent(
+          transactionId
+        ) +
+        "&callback=" +
+        callbackName;
+
+
+      script.onerror =
+        function() {
+
+          result.textContent =
+            "DELETE ERROR: Connection error";
+
+
+          result.className =
+            "status bad";
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      document.body.appendChild(
+        script
+      );
+
+    }
+
+
+    /* ==========================================
        LOAD TRANSACTIONS
     ========================================== */
 
@@ -1828,6 +1994,46 @@
 
                   actions.appendChild(
                     editButton
+                  );
+
+
+                  const deleteButton =
+                    document.createElement(
+                      "button"
+                    );
+
+
+                  deleteButton.type =
+                    "button";
+
+
+                  deleteButton.className =
+                    "button-danger";
+
+
+                  deleteButton.textContent =
+                    "DELETE";
+
+
+                  deleteButton.setAttribute(
+                    "aria-label",
+                    "Hapus transaksi " +
+                    String(transaction.id || "")
+                  );
+
+
+                  deleteButton.addEventListener(
+                    "click",
+                    function() {
+                      deleteTransactionById(
+                        transaction.id
+                      );
+                    }
+                  );
+
+
+                  actions.appendChild(
+                    deleteButton
                   );
 
 
