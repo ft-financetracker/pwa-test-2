@@ -465,6 +465,177 @@
       grid-column: 1 / -1;
     }
 
+    /* STEP 15A — PRODUCTION UI */
+
+body {
+  padding-bottom: calc(92px + env(safe-area-inset-bottom));
+}
+
+.app-header {
+  position: relative;
+  overflow: hidden;
+  min-height: 132px;
+  isolation: isolate;
+}
+
+.app-header::before,
+.app-header::after {
+  position: absolute;
+  z-index: -1;
+  content: "";
+  pointer-events: none;
+  transform: rotate(-28deg);
+}
+
+.app-header::before {
+  top: -82px;
+  right: 22px;
+  width: 48px;
+  height: 260px;
+  background: rgba(182, 255, 0, .09);
+}
+
+.app-header::after {
+  right: -62px;
+  bottom: -120px;
+  width: 180px;
+  height: 260px;
+  border: 1px solid rgba(80, 128, 255, .28);
+}
+
+.brand-logo {
+  width: min(100%, 250px);
+}
+
+.quick-nav {
+  position: sticky;
+  z-index: 30;
+  top: 8px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 7px;
+  margin: -8px 0 18px;
+  padding: 6px;
+  background: rgba(255, 255, 255, .92);
+  border: 1px solid rgba(219, 227, 238, .9);
+  border-radius: 14px;
+  box-shadow: 0 10px 28px rgba(15, 39, 71, .12);
+  backdrop-filter: blur(14px);
+}
+
+.quick-nav a {
+  min-width: 0;
+  padding: 10px 5px;
+  color: var(--color-muted);
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 9px;
+  transition: color .16s ease, background .16s ease;
+}
+
+.quick-nav a:hover,
+.quick-nav a:focus-visible {
+  color: var(--color-brand-900);
+  background: var(--color-brand-100);
+  outline: none;
+}
+
+.quick-nav a:first-child {
+  color: #081021;
+  background: var(--color-accent);
+}
+
+.content-section {
+  scroll-margin-top: 86px;
+  margin-top: 18px;
+  padding: 16px;
+  background: rgba(255, 255, 255, .82);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+}
+
+.content-section > h2:first-child,
+.content-section .section-heading h2 {
+  margin-top: 0;
+}
+
+.section-kicker {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--color-brand-600);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+.form-box {
+  margin: 0;
+  padding: 14px;
+  background: linear-gradient(180deg, #f8fbff, #f3f7fc);
+  border: 1px solid var(--color-border);
+  box-shadow: none;
+}
+
+.form-box label:first-child {
+  margin-top: 0;
+}
+
+input,
+select {
+  font-size: 16px;
+}
+
+.transaction-item {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  border-left: 4px solid var(--color-brand-600);
+  border-radius: 14px;
+}
+
+.transaction-item::after {
+  position: absolute;
+  right: -24px;
+  top: -24px;
+  width: 64px;
+  height: 64px;
+  content: "";
+  background: var(--color-brand-100);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.transaction-item .amount {
+  margin: 8px 0;
+}
+
+.empty-state {
+  grid-column: 1 / -1;
+  padding: 28px 18px;
+  color: var(--color-muted);
+  text-align: center;
+  background: #f8fafc;
+  border: 1px dashed #cbd5e1;
+  border-radius: var(--radius-md);
+}
+
+.app-footer {
+  margin: 22px 0 4px;
+  padding: 18px 12px 6px;
+  color: var(--color-muted);
+  font-size: 11px;
+  text-align: center;
+  border-top: 1px solid var(--color-border);
+}
+
+.app-footer strong {
+  color: var(--color-brand-900);
+}
+    
     /* SPLASH */
     body.splash-active {
       overflow: hidden;
@@ -545,6 +716,16 @@
         padding: 28px;
       }
 
+      .quick-nav {
+        top: 14px;
+        width: min(100%, 520px);
+        margin: -18px auto 26px;
+      }
+      
+      .content-section {
+        padding: 22px;
+      }
+      
       .summary-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
@@ -625,14 +806,24 @@
       </div>
     </header>
 
+    <nav class="quick-nav" aria-label="Navigasi utama">
+      <a href="#financeSummarySection">Ringkasan</a>
+      <a href="#transactionFormSection">Tambah</a>
+      <a href="#transactionListSection">Transaksi</a>
+    </nav>
 
     <!-- =========================================
          FINANCE SUMMARY
     ========================================== -->
 
-    <section aria-labelledby="financeSummaryTitle">
+    <section
+      id="financeSummarySection"
+      class="content-section"
+      aria-labelledby="financeSummaryTitle"
+    >
       <div class="section-heading">
         <div>
+          <span class="section-kicker">Financial Overview</span>
           <h2 id="financeSummaryTitle">Ringkasan Keuangan</h2>
           <p id="financeSummaryMeta">Data transaksi aktif</p>
         </div>
@@ -852,7 +1043,13 @@
 
     </details>
 
-
+    <section
+      id="transactionFormSection"
+      class="content-section"
+      aria-labelledby="transactionFormTitle"
+    >
+      <span class="section-kicker">Transaction Entry</span>
+      
     <!-- =========================================
          ADD TRANSACTION
     ========================================== -->
@@ -962,16 +1159,29 @@
       Transaksi: belum disimpan
     </div>
 
-
+  </section>
     <!-- =========================================
          TRANSACTIONS
     ========================================== -->
 
+    <section
+      id="transactionListSection"
+      class="content-section"
+      aria-labelledby="transactionListTitle"
+    >
+      <div class="section-heading">
+        <div>
+          <span class="section-kicker">Transaction History</span>
+          <h2 id="transactionListTitle">Daftar Transaksi</h2>
+          <p>Data aktif berdasarkan filter ringkasan</p>
+        </div>
+      </div>
+      
     <button
       id="transactionButton"
       onclick="loadTransactions()"
     >
-      Lihat Transactions
+      Muat Ulang Transaksi
     </button>
 
 
