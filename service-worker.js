@@ -1,4 +1,4 @@
-const CACHE_NAME = "finance-tracker-v8-2";
+const CACHE_NAME = "finance-tracker-v13-1";
 
 const APP_SHELL = [
   "./",
