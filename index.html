@@ -149,6 +149,32 @@
       font-size: 13px;
     }
 
+    .period-filter {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+      margin: var(--space-4) 0 var(--space-2);
+      padding: var(--space-4);
+      text-align: left;
+      background: #f8fbff;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+    
+    .period-filter label {
+      margin-top: 0;
+    }
+    
+    .period-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-2);
+    }
+    
+    .period-actions button {
+      margin-top: 0;
+    }
+
     .summary-grid {
       display: grid;
       grid-template-columns: 1fr;
@@ -373,6 +399,16 @@
       .app-header {
         margin: -24px -24px var(--space-6);
       }
+
+      .period-filter {
+        grid-template-columns: 1fr 1fr;
+        align-items: end;
+      }
+      
+      .period-actions {
+        grid-column: 1 / -1;
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     @media (prefers-reduced-motion: reduce) {
@@ -435,13 +471,47 @@
         </article>
       </div>
 
-      <button
-        id="financeSummaryButton"
-        type="button"
-        onclick="loadFinanceSummary()"
-      >
-        Perbarui Ringkasan
-      </button>
+      <div class="period-filter">
+        <div>
+          <label for="financeStartDate">
+            Tanggal Mulai
+          </label>
+      
+          <input
+            id="financeStartDate"
+            type="date"
+          >
+        </div>
+      
+        <div>
+          <label for="financeEndDate">
+            Tanggal Selesai
+          </label>
+      
+          <input
+            id="financeEndDate"
+            type="date"
+          >
+        </div>
+      
+        <div class="period-actions">
+          <button
+            id="financeSummaryButton"
+            type="button"
+            onclick="loadFinanceSummary()"
+          >
+            Terapkan Periode
+          </button>
+      
+          <button
+            class="button-secondary"
+            type="button"
+            onclick="resetFinancePeriod()"
+          >
+            Reset Periode
+          </button>
+        </div>
+      </div>
 
       <div
         id="financeSummaryResult"
@@ -1561,6 +1631,32 @@
           "financeSummaryMeta"
         );
 
+      const startDate =
+        document.getElementById(
+          "financeStartDate"
+        ).value;
+      
+      const endDate =
+        document.getElementById(
+          "financeEndDate"
+        ).value;
+      
+      
+      if (
+        startDate &&
+        endDate &&
+        startDate > endDate
+      ) {
+      
+        result.textContent =
+          "FILTER ERROR: Tanggal mulai tidak boleh melebihi tanggal selesai";
+      
+        result.className =
+          "status bad";
+      
+        return;
+      }
+
       result.textContent =
         "Ringkasan: menghitung transaksi...";
 
@@ -1644,6 +1740,21 @@
       script.src =
         API_URL +
         "?action=financeSummary" +
+      
+        (
+          startDate
+            ? "&startDate=" +
+              encodeURIComponent(startDate)
+            : ""
+        ) +
+      
+        (
+          endDate
+            ? "&endDate=" +
+              encodeURIComponent(endDate)
+            : ""
+        ) +
+      
         "&callback=" +
         callbackName;
 
@@ -1668,6 +1779,19 @@
 
     }
 
+    function resetFinancePeriod() {
+
+      document.getElementById(
+        "financeStartDate"
+      ).value = "";
+    
+      document.getElementById(
+        "financeEndDate"
+      ).value = "";
+    
+      loadFinanceSummary();
+    
+    }
 
     /* ==========================================
        ADD / EDIT TRANSACTION
