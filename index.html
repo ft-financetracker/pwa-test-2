@@ -19,6 +19,13 @@
     content="PWA Finance Tracker"
   >
 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
   <link
     rel="manifest"
     href="./manifest.json"
@@ -27,12 +34,12 @@
   <link
     rel="icon"
     type="image/png"
-    href="./ft-icon-64.png?v=14"
+    href="./ft-icon-64.png?v=15"
   >
 
   <link
     rel="apple-touch-icon"
-    href="./ft-icon-180.png?v=14"
+    href="./ft-icon-180.png?v=15"
   >
 
   <title>Finance Tracker</title>
@@ -79,7 +86,7 @@
       margin: 0;
       min-height: 100vh;
       padding: 8px;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+      font-family: "Plus Jakarta Sans", Inter, ui-sans-serif, system-ui, -apple-system,
         BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--color-text);
       background:
@@ -635,6 +642,80 @@ select {
 .app-footer strong {
   color: var(--color-brand-900);
 }
+
+/* STEP 15B — LOCKED INTERACTION SYSTEM */
+button.is-loading {
+  position: relative;
+  color: transparent !important;
+  pointer-events: none;
+}
+
+button.is-loading::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  content: "";
+  border: 2px solid rgba(255, 255, 255, .42);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: button-spin .7s linear infinite;
+}
+
+#financeSummaryButton.is-loading::after,
+#transactionSubmitButton.is-loading::after {
+  border-color: rgba(8, 16, 33, .24);
+  border-top-color: #081021;
+}
+
+.toast-region {
+  position: fixed;
+  z-index: 10000;
+  right: 12px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  left: 12px;
+  display: grid;
+  justify-items: center;
+  pointer-events: none;
+}
+
+.app-toast {
+  width: min(100%, 420px);
+  padding: 13px 15px;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+  background: var(--color-brand-900);
+  border: 1px solid rgba(255, 255, 255, .16);
+  border-radius: 12px;
+  box-shadow: 0 18px 42px rgba(11, 19, 43, .28);
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity .2s ease, transform .2s ease;
+}
+
+.app-toast.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.app-toast--success {
+  color: #081021;
+  background: var(--color-accent);
+}
+
+.app-toast--error {
+  background: var(--color-danger);
+}
+
+@keyframes button-spin {
+  to {
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
     
     /* SPLASH */
     body.splash-active {
@@ -778,7 +859,7 @@ select {
     <div class="splash-content">
       <img
         class="splash-logo"
-        src="./ft-logo.png?v=14"
+        src="./ft-logo.png?v=15"
         alt="Finance Tracker"
       >
 
@@ -788,6 +869,14 @@ select {
         Menyiapkan Finance Tracker
       </p>
     </div>
+  </div>
+
+  <div
+    class="toast-region"
+    aria-live="polite"
+    aria-atomic="true"
+  >
+    <div id="appToast" class="app-toast" role="status"></div>
   </div>
 
   <main class="card">
@@ -800,7 +889,7 @@ select {
 
         <img
           class="brand-logo"
-          src="./ft-logo.png?v=14"
+          src="./ft-logo.png?v=15"
           alt="Finance Tracker"
         >
       </div>
@@ -1344,6 +1433,85 @@ select {
     }
 
 
+    let toastTimer = null;
+    const buttonLoadingTimers = new WeakMap();
+
+
+    function setButtonLoading(buttonOrId, loading) {
+
+      const button =
+        typeof buttonOrId === "string"
+          ? document.getElementById(buttonOrId)
+          : buttonOrId;
+
+      if (!button) {
+        return;
+      }
+
+      const oldTimer =
+        buttonLoadingTimers.get(button);
+
+      if (oldTimer) {
+        clearTimeout(oldTimer);
+        buttonLoadingTimers.delete(button);
+      }
+
+      button.disabled = Boolean(loading);
+      button.classList.toggle(
+        "is-loading",
+        Boolean(loading)
+      );
+      button.setAttribute(
+        "aria-busy",
+        String(Boolean(loading))
+      );
+
+      if (loading) {
+        const safetyTimer = setTimeout(function() {
+          button.disabled = false;
+          button.classList.remove("is-loading");
+          button.setAttribute("aria-busy", "false");
+          buttonLoadingTimers.delete(button);
+        }, 20000);
+
+        buttonLoadingTimers.set(
+          button,
+          safetyTimer
+        );
+      }
+
+    }
+
+
+    function showToast(message, type) {
+
+      const toast =
+        document.getElementById("appToast");
+
+      if (!toast) {
+        return;
+      }
+
+      clearTimeout(toastTimer);
+
+      toast.textContent =
+        String(message || "");
+
+      toast.className =
+        "app-toast app-toast--" +
+        (type === "error" ? "error" : "success");
+
+      requestAnimationFrame(function() {
+        toast.classList.add("is-visible");
+      });
+
+      toastTimer = setTimeout(function() {
+        toast.classList.remove("is-visible");
+      }, 2800);
+
+    }
+
+
     /* ==========================================
        ESCAPE HTML
     ========================================== */
@@ -1519,7 +1687,6 @@ select {
               "status bad";
 
           }
-
 
           delete window[callbackName];
 
@@ -2391,6 +2558,11 @@ select {
       result.className =
         "status";
 
+      setButtonLoading(
+        "financeSummaryButton",
+        true
+      );
+
       const callbackName =
         "financeSummaryCallback_" +
         Date.now();
@@ -2454,6 +2626,11 @@ select {
 
           }
 
+          setButtonLoading(
+            "financeSummaryButton",
+            false
+          );
+
           delete window[callbackName];
 
           if (script) {
@@ -2503,6 +2680,11 @@ select {
 
           result.className =
             "status bad";
+
+          setButtonLoading(
+            "financeSummaryButton",
+            false
+          );
 
           delete window[callbackName];
 
@@ -2659,6 +2841,11 @@ select {
       result.className =
         "status";
 
+      setButtonLoading(
+        "transactionSubmitButton",
+        true
+      );
+
 
       const callbackName =
         (
@@ -2728,6 +2915,13 @@ select {
             result.className =
               "status ok";
 
+            showToast(
+              isEditing
+                ? "Transaksi berhasil diperbarui"
+                : "Transaksi berhasil disimpan",
+              "success"
+            );
+
 
             /* RESET FORM DAN EDIT MODE */
 
@@ -2756,7 +2950,19 @@ select {
             result.className =
               "status bad";
 
+            showToast(
+              response && response.message
+                ? response.message
+                : "Transaksi gagal diproses",
+              "error"
+            );
+
           }
+
+          setButtonLoading(
+            "transactionSubmitButton",
+            false
+          );
 
 
           delete window[callbackName];
@@ -2827,6 +3033,16 @@ select {
 
           result.className =
             "status bad";
+
+          setButtonLoading(
+            "transactionSubmitButton",
+            false
+          );
+
+          showToast(
+            "Koneksi gagal. Silakan coba lagi.",
+            "error"
+          );
 
 
           delete window[callbackName];
@@ -2960,7 +3176,7 @@ select {
        DELETE TRANSACTION
     ========================================== */
 
-    function deleteTransactionById(id) {
+    function deleteTransactionById(id, sourceButton) {
 
       const transactionId =
         String(id || "").trim();
@@ -2980,6 +3196,11 @@ select {
       if (!confirmed) {
         return;
       }
+
+      setButtonLoading(
+        sourceButton,
+        true
+      );
 
 
       const result =
@@ -3024,6 +3245,11 @@ select {
             result.className =
               "status ok";
 
+            showToast(
+              "Transaksi berhasil dihapus",
+              "success"
+            );
+
 
             if (
               editingTransactionId === transactionId
@@ -3052,7 +3278,19 @@ select {
             result.className =
               "status bad";
 
+            showToast(
+              response && response.message
+                ? response.message
+                : "Transaksi gagal dihapus",
+              "error"
+            );
+
           }
+
+          setButtonLoading(
+            sourceButton,
+            false
+          );
 
 
           delete window[callbackName];
@@ -3091,6 +3329,16 @@ select {
 
           result.className =
             "status bad";
+
+          setButtonLoading(
+            sourceButton,
+            false
+          );
+
+          showToast(
+            "Koneksi gagal. Silakan coba lagi.",
+            "error"
+          );
 
 
           delete window[callbackName];
@@ -3165,6 +3413,11 @@ select {
 
       result.className =
         "status";
+
+      setButtonLoading(
+        "transactionButton",
+        true
+      );
 
 
       container.innerHTML =
@@ -3348,7 +3601,8 @@ select {
                     "click",
                     function() {
                       deleteTransactionById(
-                        transaction.id
+                        transaction.id,
+                        deleteButton
                       );
                     }
                   );
@@ -3390,6 +3644,11 @@ select {
               "status bad";
 
           }
+
+          setButtonLoading(
+            "transactionButton",
+            false
+          );
 
 
           delete window[callbackName];
@@ -3448,6 +3707,11 @@ select {
 
           result.className =
             "status bad";
+
+          setButtonLoading(
+            "transactionButton",
+            false
+          );
 
 
           delete window[callbackName];
@@ -3560,4 +3824,3 @@ select {
 </body>
 
 </html>
-
