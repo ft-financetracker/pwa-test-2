@@ -1,11 +1,14 @@
-const CACHE_NAME = "finance-tracker-v13-2";
+const CACHE_NAME = "finance-tracker-v14-1";
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./icon-192.png?v=8",
-  "./icon-512.png?v=8"
+  "./ft-logo.png?v=14",
+  "./ft-icon-64.png?v=14",
+  "./ft-icon-180.png?v=14",
+  "./ft-icon-192.png?v=14",
+  "./ft-icon-512.png?v=14"
 ];
 
 
@@ -54,12 +57,12 @@ self.addEventListener("fetch", (event) => {
   const requestUrl = new URL(request.url);
 
   // Request lintas domain, termasuk JSONP Google Apps Script,
-  // berjalan langsung melalui browser dan tidak dikelola cache PWA.
+  // harus berjalan langsung melalui browser dan tidak dikelola cache PWA.
   if (requestUrl.origin !== self.location.origin) {
     return;
   }
 
-  // Halaman utama memakai network-first agar index.html terbaru
+  // Halaman utama menggunakan network-first agar index.html terbaru
   // segera terlihat setelah deployment GitHub Pages.
   if (request.mode === "navigate") {
     event.respondWith(
@@ -104,3 +107,4 @@ self.addEventListener("fetch", (event) => {
     })
   );
 });
+
