@@ -148,6 +148,24 @@
       font-size: 18px;
       font-weight: bold;
     }
+
+    .transaction-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    .transaction-actions button {
+      margin-top: 0;
+    }
+
+    .button-secondary {
+      background: #4b5563;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
   </style>
 
 </head>
@@ -295,7 +313,9 @@
          ADD TRANSACTION
     ========================================== -->
 
-    <h2>Tambah Transaksi</h2>
+    <h2 id="transactionFormTitle">
+      Tambah Transaksi
+    </h2>
 
 
     <form
@@ -366,9 +386,21 @@
 
 
         <button
+          id="transactionSubmitButton"
           type="submit"
         >
           Simpan Transaksi
+        </button>
+
+
+        <button
+          id="transactionCancelButton"
+          class="button-secondary"
+          type="button"
+          onclick="cancelEditTransaction()"
+          hidden
+        >
+          Batal Edit
         </button>
 
       </div>
@@ -426,6 +458,9 @@
 
     const API_URL =
       "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec";
+
+
+    let editingTransactionId = null;
 
 
     /* ==========================================
@@ -1220,7 +1255,7 @@
 
 
     /* ==========================================
-       ADD TRANSACTION
+       ADD / EDIT TRANSACTION
     ========================================== */
 
     function submitTransaction(event) {
@@ -1258,6 +1293,16 @@
             "transactionAmount"
           ).value
         );
+
+
+      const isEditing =
+        Boolean(editingTransactionId);
+
+
+      const action =
+        isEditing
+          ? "editTransaction"
+          : "addTransaction";
 
 
       /* VALIDASI */
@@ -1316,14 +1361,20 @@
       /* STATUS */
 
       result.textContent =
-        "Transaksi: menyimpan...";
+        isEditing
+          ? "Transaksi: mengupdate..."
+          : "Transaksi: menyimpan...";
 
       result.className =
         "status";
 
 
       const callbackName =
-        "addTransactionCallback_" +
+        (
+          isEditing
+            ? "editTransactionCallback_"
+            : "addTransactionCallback_"
+        ) +
         Date.now();
 
 
@@ -1347,7 +1398,11 @@
 
             result.innerHTML =
               "<strong>" +
-              "TRANSAKSI BERHASIL DISIMPAN" +
+              (
+                isEditing
+                  ? "TRANSAKSI BERHASIL DIUPDATE"
+                  : "TRANSAKSI BERHASIL DISIMPAN"
+              ) +
               "</strong><br><br>" +
 
               "ID: " +
@@ -1383,13 +1438,9 @@
               "status ok";
 
 
-            /* RESET FORM */
+            /* RESET FORM DAN EDIT MODE */
 
-            document
-              .getElementById(
-                "transactionForm"
-              )
-              .reset();
+            resetTransactionForm();
 
 
             /* REFRESH TRANSACTIONS */
@@ -1436,7 +1487,17 @@
       script.src =
         API_URL +
 
-        "?action=addTransaction" +
+        "?action=" +
+        action +
+
+        (
+          isEditing
+            ? "&id=" +
+              encodeURIComponent(
+                editingTransactionId
+              )
+            : ""
+        ) +
 
         "&type=" +
         encodeURIComponent(
@@ -1488,6 +1549,110 @@
       document.body.appendChild(
         script
       );
+
+    }
+
+
+    /* ==========================================
+       TRANSACTION FORM MODE
+    ========================================== */
+
+    function editTransaction(transaction) {
+
+      editingTransactionId =
+        String(transaction.id || "");
+
+
+      document.getElementById(
+        "transactionType"
+      ).value =
+        String(transaction.type || "EXPENSE");
+
+
+      document.getElementById(
+        "transactionCategory"
+      ).value =
+        String(transaction.category || "");
+
+
+      document.getElementById(
+        "transactionDescription"
+      ).value =
+        String(transaction.description || "");
+
+
+      document.getElementById(
+        "transactionAmount"
+      ).value =
+        Number(transaction.amount || 0);
+
+
+      document.getElementById(
+        "transactionFormTitle"
+      ).textContent =
+        "Edit Transaksi";
+
+
+      document.getElementById(
+        "transactionSubmitButton"
+      ).textContent =
+        "Simpan Perubahan";
+
+
+      document.getElementById(
+        "transactionCancelButton"
+      ).hidden = false;
+
+
+      document.getElementById(
+        "transactionForm"
+      ).scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    }
+
+
+    function cancelEditTransaction() {
+
+      resetTransactionForm();
+
+
+      setStatus(
+        "addTransactionResult",
+        true,
+        "Edit transaksi dibatalkan"
+      );
+
+    }
+
+
+    function resetTransactionForm() {
+
+      editingTransactionId = null;
+
+
+      document.getElementById(
+        "transactionForm"
+      ).reset();
+
+
+      document.getElementById(
+        "transactionFormTitle"
+      ).textContent =
+        "Tambah Transaksi";
+
+
+      document.getElementById(
+        "transactionSubmitButton"
+      ).textContent =
+        "Simpan Transaksi";
+
+
+      document.getElementById(
+        "transactionCancelButton"
+      ).hidden = true;
 
     }
 
@@ -1620,6 +1785,55 @@
                     escapeHtml(
                       transaction.status
                     );
+
+
+                  const actions =
+                    document.createElement(
+                      "div"
+                    );
+
+
+                  actions.className =
+                    "transaction-actions";
+
+
+                  const editButton =
+                    document.createElement(
+                      "button"
+                    );
+
+
+                  editButton.type =
+                    "button";
+
+
+                  editButton.textContent =
+                    "EDIT";
+
+
+                  editButton.setAttribute(
+                    "aria-label",
+                    "Edit transaksi " +
+                    String(transaction.id || "")
+                  );
+
+
+                  editButton.addEventListener(
+                    "click",
+                    function() {
+                      editTransaction(transaction);
+                    }
+                  );
+
+
+                  actions.appendChild(
+                    editButton
+                  );
+
+
+                  item.appendChild(
+                    actions
+                  );
 
 
                   container.appendChild(
