@@ -2,7 +2,6 @@
 <html lang="id">
 
 <head>
-
   <meta charset="UTF-8">
 
   <meta
@@ -17,7 +16,7 @@
 
   <meta
     name="description"
-    content="PWA Test 6 - Google Apps Script"
+    content="PWA Finance Tracker"
   >
 
   <link
@@ -25,10 +24,9 @@
     href="./manifest.json"
   >
 
-  <title>PWA Test 6</title>
+  <title>PWA Finance Tracker</title>
 
   <style>
-
     * {
       box-sizing: border-box;
     }
@@ -46,7 +44,6 @@
     }
 
     .card {
-
       width: min(92%, 420px);
 
       padding: 30px;
@@ -56,7 +53,7 @@
       border-radius: 20px;
 
       box-shadow:
-        0 10px 30px rgba(0,0,0,.08);
+        0 10px 30px rgba(0, 0, 0, .08);
 
       text-align: center;
     }
@@ -65,8 +62,12 @@
       margin-top: 0;
     }
 
-    .status {
+    h2 {
+      margin-top: 30px;
+      margin-bottom: 10px;
+    }
 
+    .status {
       margin: 14px 0;
 
       padding: 14px;
@@ -87,7 +88,6 @@
     }
 
     button {
-
       width: 100%;
 
       padding: 14px;
@@ -111,6 +111,43 @@
       transform: scale(.98);
     }
 
+    label {
+      display: block;
+
+      margin-top: 10px;
+
+      margin-bottom: 6px;
+
+      font-size: 14px;
+    }
+
+    input,
+    select {
+      width: 100%;
+
+      padding: 12px;
+
+      border-radius: 10px;
+
+      border: 1px solid #ddd;
+
+      font-size: 16px;
+
+      background: white;
+    }
+
+    .form-box {
+      text-align: left;
+    }
+
+    .transaction-item {
+      text-align: left;
+    }
+
+    .amount {
+      font-size: 18px;
+      font-weight: bold;
+    }
   </style>
 
 </head>
@@ -120,16 +157,16 @@
 
   <main class="card">
 
-    <h1>PWA Test 6</h1>
+    <h1>PWA Finance Tracker</h1>
 
     <p>
       PWA → Apps Script → Google Sheets
     </p>
 
 
-    <!-- ========================= -->
-    <!-- PWA STATUS -->
-    <!-- ========================= -->
+    <!-- =========================================
+         PWA STATUS
+    ========================================== -->
 
     <div
       id="manifest"
@@ -160,9 +197,9 @@
     </p>
 
 
-    <!-- ========================= -->
-    <!-- APPS SCRIPT -->
-    <!-- ========================= -->
+    <!-- =========================================
+         APPS SCRIPT HEALTH
+    ========================================== -->
 
     <button
       id="apiButton"
@@ -180,9 +217,9 @@
     </div>
 
 
-    <!-- ========================= -->
-    <!-- WRITE -->
-    <!-- ========================= -->
+    <!-- =========================================
+         WRITE TEST
+    ========================================== -->
 
     <button
       id="writeButton"
@@ -200,9 +237,9 @@
     </div>
 
 
-    <!-- ========================= -->
-    <!-- READ -->
-    <!-- ========================= -->
+    <!-- =========================================
+         READ TEST
+    ========================================== -->
 
     <button
       id="readButton"
@@ -227,9 +264,9 @@
     </div>
 
 
-    <!-- ========================= -->
-    <!-- DASHBOARD -->
-    <!-- ========================= -->
+    <!-- =========================================
+         DASHBOARD
+    ========================================== -->
 
     <button
       id="dashboardButton"
@@ -253,418 +290,103 @@
     >
     </div>
 
-    <!-- ========================= -->
-<!-- ADD TRANSACTION -->
-<!-- ========================= -->
 
-<h2>Tambah Transaksi</h2>
+    <!-- =========================================
+         ADD TRANSACTION
+    ========================================== -->
 
-<form
-  id="transactionForm"
-  onsubmit="submitTransaction(event)"
->
+    <h2>Tambah Transaksi</h2>
 
-  <div
-    class="status"
-    style="text-align:left;"
-  >
 
-    <label>
-      Type
-    </label>
-
-    <select
-      id="transactionType"
-      required
-      style="
-        width:100%;
-        padding:12px;
-        margin-top:6px;
-        margin-bottom:12px;
-        border-radius:10px;
-        border:1px solid #ddd;
-        font-size:16px;
-      "
+    <form
+      id="transactionForm"
+      onsubmit="submitTransaction(event)"
     >
 
-      <option value="EXPENSE">
-        EXPENSE
-      </option>
+      <div
+        class="status form-box"
+      >
 
-      <option value="INCOME">
-        INCOME
-      </option>
+        <label for="transactionType">
+          Type
+        </label>
 
-    </select>
+        <select
+          id="transactionType"
+          required
+        >
+
+          <option value="EXPENSE">
+            EXPENSE
+          </option>
+
+          <option value="INCOME">
+            INCOME
+          </option>
+
+        </select>
 
 
-    <label>
-      Category
-    </label>
+        <label for="transactionCategory">
+          Category
+        </label>
 
-    <input
-      id="transactionCategory"
-      type="text"
-      placeholder="Contoh: Food"
-      required
-      style="
-        width:100%;
-        padding:12px;
-        margin-top:6px;
-        margin-bottom:12px;
-        border-radius:10px;
-        border:1px solid #ddd;
-        font-size:16px;
-      "
+        <input
+          id="transactionCategory"
+          type="text"
+          placeholder="Contoh: Food"
+          required
+        >
+
+
+        <label for="transactionDescription">
+          Description
+        </label>
+
+        <input
+          id="transactionDescription"
+          type="text"
+          placeholder="Contoh: Makan siang"
+          required
+        >
+
+
+        <label for="transactionAmount">
+          Amount
+        </label>
+
+        <input
+          id="transactionAmount"
+          type="number"
+          min="1"
+          step="1"
+          placeholder="25000"
+          required
+        >
+
+
+        <button
+          type="submit"
+        >
+          Simpan Transaksi
+        </button>
+
+      </div>
+
+    </form>
+
+
+    <div
+      id="addTransactionResult"
+      class="status"
     >
+      Transaksi: belum disimpan
+    </div>
 
 
-    <label>
-      Description
-    </label>
-
-    <input
-      id="transactionDescription"
-      type="text"
-      placeholder="Contoh: Makan siang"
-      required
-      style="
-        width:100%;
-        padding:12px;
-        margin-top:6px;
-        margin-bottom:12px;
-        border-radius:10px;
-        border:1px solid #ddd;
-        font-size:16px;
-      "
-    >
-
-
-    <label>
-      Amount
-    </label>
-
-    <input
-      id="transactionAmount"
-      type="number"
-      min="1"
-      step="1"
-      placeholder="25000"
-      required
-      style="
-        width:100%;
-        padding:12px;
-        margin-top:6px;
-        margin-bottom:12px;
-        border-radius:10px;
-        border:1px solid #ddd;
-        font-size:16px;
-      "
-    >
-
-
-    <button
-      type="submit"
-    >
-      Simpan Transaksi
-    </button>
-
-  </div>
-
-</form>
-
-
-<div
-  id="addTransactionResult"
-  class="status"
->
-  Transaksi: belum disimpan
-</div>
-
-    /* ==========================================
-   ADD TRANSACTION
-========================================== */
-
-function submitTransaction(event) {
-
-  event.preventDefault();
-
-
-  const result =
-    document.getElementById(
-      "addTransactionResult"
-    );
-
-
-  const type =
-    document.getElementById(
-      "transactionType"
-    ).value;
-
-
-  const category =
-    document.getElementById(
-      "transactionCategory"
-    ).value.trim();
-
-
-  const description =
-    document.getElementById(
-      "transactionDescription"
-    ).value.trim();
-
-
-  const amount =
-    Number(
-      document.getElementById(
-        "transactionAmount"
-      ).value
-    );
-
-
-  /* ==========================
-     VALIDASI
-  ========================== */
-
-  if (!type) {
-
-    result.textContent =
-      "ERROR: Type wajib dipilih";
-
-    result.className =
-      "status bad";
-
-    return;
-  }
-
-
-  if (!category) {
-
-    result.textContent =
-      "ERROR: Category wajib diisi";
-
-    result.className =
-      "status bad";
-
-    return;
-  }
-
-
-  if (!description) {
-
-    result.textContent =
-      "ERROR: Description wajib diisi";
-
-    result.className =
-      "status bad";
-
-    return;
-  }
-
-
-  if (
-    !Number.isFinite(amount) ||
-    amount <= 0
-  ) {
-
-    result.textContent =
-      "ERROR: Amount harus lebih dari 0";
-
-    result.className =
-      "status bad";
-
-    return;
-  }
-
-
-  /* ==========================
-     STATUS
-  ========================== */
-
-  result.textContent =
-    "Transaksi: menyimpan...";
-
-  result.className =
-    "status";
-
-
-  const callbackName =
-    "addTransactionCallback_" +
-    Date.now();
-
-
-  /* ==========================
-     CALLBACK
-  ========================== */
-
-  window[callbackName] =
-    function(response) {
-
-      if (
-        response &&
-        response.success &&
-        response.data
-      ) {
-
-        const data =
-          response.data;
-
-
-        result.innerHTML =
-          "<strong>" +
-          "TRANSAKSI BERHASIL DISIMPAN" +
-          "</strong><br><br>" +
-
-          "ID: " +
-          escapeHtml(
-            data.id
-          ) +
-          "<br>" +
-
-          escapeHtml(
-            data.category
-          ) +
-          "<br>" +
-
-          escapeHtml(
-            data.description
-          ) +
-          "<br>" +
-
-          escapeHtml(
-            data.type
-          ) +
-          "<br>" +
-
-          "Rp " +
-          Number(
-            data.amount || 0
-          ).toLocaleString(
-            "id-ID"
-          );
-
-
-        result.className =
-          "status ok";
-
-
-        /* ======================
-           RESET FORM
-        ====================== */
-
-        document
-          .getElementById(
-            "transactionForm"
-          )
-          .reset();
-
-
-        /* ======================
-           REFRESH TRANSACTIONS
-        ====================== */
-
-        loadTransactions();
-
-
-      } else {
-
-        result.textContent =
-          "TRANSAKSI ERROR: " +
-          (
-            response &&
-            response.message
-              ? response.message
-              : "Unknown error"
-          );
-
-
-        result.className =
-          "status bad";
-
-      }
-
-
-      delete window[callbackName];
-
-
-      if (script) {
-        script.remove();
-      }
-
-    };
-
-
-  /* ==========================
-     JSONP SCRIPT
-  ========================== */
-
-  const script =
-    document.createElement(
-      "script"
-    );
-
-
-  script.src =
-    API_URL +
-
-    "?action=addTransaction" +
-
-    "&type=" +
-    encodeURIComponent(
-      type
-    ) +
-
-    "&category=" +
-    encodeURIComponent(
-      category
-    ) +
-
-    "&description=" +
-    encodeURIComponent(
-      description
-    ) +
-
-    "&amount=" +
-    encodeURIComponent(
-      amount
-    ) +
-
-    "&callback=" +
-    callbackName;
-
-
-  /* ==========================
-     ERROR
-  ========================== */
-
-  script.onerror =
-    function() {
-
-      result.textContent =
-        "TRANSAKSI ERROR: Connection error";
-
-
-      result.className =
-        "status bad";
-
-
-      delete window[callbackName];
-
-
-      script.remove();
-
-    };
-
-
-  document.body.appendChild(
-    script
-  );
-
-}
-
-    <!-- ========================= -->
-    <!-- TRANSACTIONS -->
-    <!-- ========================= -->
+    <!-- =========================================
+         TRANSACTIONS
+    ========================================== -->
 
     <button
       id="transactionButton"
@@ -692,1078 +414,1366 @@ function submitTransaction(event) {
   </main>
 
 
-<script>
+  <!-- =========================================
+       JAVASCRIPT
+  ========================================== -->
 
+  <script>
 
-/* ==========================================
-   CONFIG
-========================================== */
+    /* ==========================================
+       CONFIG
+    ========================================== */
 
-const API_URL =
-  "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec";
+    const API_URL =
+      "https://script.google.com/macros/s/AKfycbw0iZjYuZctafHmKXDr8TPlT_OJOOlBFQ3AeVd9EY_0TsySNnacWIhJYKeEbuYiA_uU/exec";
 
 
-/* ==========================================
-   STATUS HELPER
-========================================== */
+    /* ==========================================
+       STATUS HELPER
+    ========================================== */
 
-function setStatus(id, ok, text) {
+    function setStatus(id, ok, text) {
 
-  const el =
-    document.getElementById(id);
+      const el =
+        document.getElementById(id);
 
-  el.textContent =
-    text;
-
-  el.className =
-    "status " +
-    (ok ? "ok" : "bad");
-}
-
-
-/* ==========================================
-   MANIFEST
-========================================== */
-
-async function testManifest() {
-
-  try {
-
-    const response =
-      await fetch(
-        "./manifest.json",
-        {
-          cache: "no-store"
-        }
-      );
-
-
-    const manifest =
-      await response.json();
-
-
-    const ok =
-      !!manifest.name &&
-      !!manifest.start_url &&
-      !!manifest.icons;
-
-
-    setStatus(
-      "manifest",
-      ok,
-      ok
-        ? "Manifest: OK"
-        : "Manifest: ERROR"
-    );
-
-
-  } catch (e) {
-
-    setStatus(
-      "manifest",
-      false,
-      "Manifest: ERROR"
-    );
-
-  }
-
-}
-
-
-/* ==========================================
-   SERVICE WORKER
-========================================== */
-
-async function testServiceWorker() {
-
-  if (
-    !("serviceWorker" in navigator)
-  ) {
-
-    setStatus(
-      "sw",
-      false,
-      "Service Worker: tidak didukung"
-    );
-
-    return;
-  }
-
-
-  try {
-
-    const registration =
-      await navigator.serviceWorker.register(
-        "./service-worker.js"
-      );
-
-
-    await navigator.serviceWorker.ready;
-
-
-    setStatus(
-      "sw",
-      true,
-      "Service Worker: AKTIF (" +
-      registration.scope +
-      ")"
-    );
-
-
-  } catch (e) {
-
-    setStatus(
-      "sw",
-      false,
-      "Service Worker: ERROR — " +
-      e.message
-    );
-
-  }
-
-}
-
-
-/* ==========================================
-   APPS SCRIPT HEALTH
-========================================== */
-
-function testAppsScript() {
-
-  const result =
-    document.getElementById(
-      "apiResult"
-    );
-
-
-  result.textContent =
-    "Apps Script: connecting...";
-
-  result.className =
-    "status";
-
-
-  const callbackName =
-    "pwaCallback_" +
-    Date.now();
-
-
-  window[callbackName] =
-    function(data) {
-
-      if (
-        data &&
-        data.success
-      ) {
-
-        result.textContent =
-          "Apps Script: CONNECTED | " +
-          data.message +
-          " | Spreadsheet: " +
-          data.spreadsheet;
-
-
-        result.className =
-          "status ok";
-
-
-      } else {
-
-        result.textContent =
-          "Apps Script: ERROR";
-
-
-        result.className =
-          "status bad";
-
+      if (!el) {
+        return;
       }
 
+      el.textContent = text;
 
-      delete window[callbackName];
+      el.className =
+        "status " +
+        (ok ? "ok" : "bad");
+    }
 
 
-      if (script) {
-        script.remove();
-      }
+    /* ==========================================
+       ESCAPE HTML
+    ========================================== */
 
-    };
+    function escapeHtml(value) {
 
+      return String(value ?? "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
-  const script =
-    document.createElement(
-      "script"
-    );
+    }
 
 
-  script.src =
-    API_URL +
-    "?action=health" +
-    "&callback=" +
-    callbackName;
+    /* ==========================================
+       MANIFEST
+    ========================================== */
 
+    async function testManifest() {
 
-  script.onerror =
-    function() {
+      try {
 
-      result.textContent =
-        "Apps Script: CONNECTION ERROR";
-
-
-      result.className =
-        "status bad";
-
-
-      delete window[callbackName];
-
-
-      script.remove();
-
-    };
-
-
-  document.body.appendChild(
-    script
-  );
-
-}
-
-
-/* ==========================================
-   WRITE
-========================================== */
-
-function writeToSheets() {
-
-  const result =
-    document.getElementById(
-      "writeResult"
-    );
-
-
-  result.textContent =
-    "Write: mengirim data...";
-
-  result.className =
-    "status";
-
-
-  const callbackName =
-    "writeCallback_" +
-    Date.now();
-
-
-  window[callbackName] =
-    function(response) {
-
-      if (
-        response &&
-        response.success &&
-        response.data
-      ) {
-
-        const data =
-          response.data;
-
-
-        result.textContent =
-          "WRITE BERHASIL! " +
-          data.message;
-
-
-        result.className =
-          "status ok";
-
-
-      } else {
-
-        result.textContent =
-          "WRITE ERROR: " +
-          (
-            response &&
-            response.message
-              ? response.message
-              : "Unknown error"
-          );
-
-
-        result.className =
-          "status bad";
-
-      }
-
-
-      delete window[callbackName];
-
-
-      if (script) {
-        script.remove();
-      }
-
-    };
-
-
-  const script =
-    document.createElement(
-      "script"
-    );
-
-
-  script.src =
-    API_URL +
-    "?action=write" +
-    "&callback=" +
-    callbackName;
-
-
-  script.onerror =
-    function() {
-
-      result.textContent =
-        "WRITE ERROR: Connection error";
-
-
-      result.className =
-        "status bad";
-
-
-      delete window[callbackName];
-
-
-      script.remove();
-
-    };
-
-
-  document.body.appendChild(
-    script
-  );
-
-}
-
-
-/* ==========================================
-   READ PWA_TEST
-========================================== */
-
-function readFromSheets() {
-
-  const result =
-    document.getElementById(
-      "readResult"
-    );
-
-
-  const container =
-    document.getElementById(
-      "dataContainer"
-    );
-
-
-  result.textContent =
-    "Read: membaca Google Sheets...";
-
-  result.className =
-    "status";
-
-
-  container.innerHTML =
-    "";
-
-
-  const callbackName =
-    "readCallback_" +
-    Date.now();
-
-
-  window[callbackName] =
-    function(response) {
-
-      if (
-        response &&
-        response.success &&
-        response.data
-      ) {
-
-        const data =
-          response.data;
-
-
-        const rows =
-          data.rows || [];
-
-
-        const count =
-          data.count || 0;
-
-
-        result.textContent =
-          "READ BERHASIL! " +
-          "Data berhasil dibaca dari Google Sheets" +
-          " | Total: " +
-          count;
-
-
-        result.className =
-          "status ok";
-
-
-        if (
-          rows.length === 0
-        ) {
-
-          container.innerHTML =
-            "<p>Belum ada data.</p>";
-
-        } else {
-
-          rows.forEach(
-            function(row) {
-
-              const item =
-                document.createElement(
-                  "div"
-                );
-
-
-              item.className =
-                "status";
-
-
-              item.innerHTML =
-                "<strong>" +
-                escapeHtml(
-                  row.source
-                ) +
-                "</strong><br>" +
-
-                escapeHtml(
-                  row.message
-                ) +
-                "<br>" +
-
-                "<small>" +
-                escapeHtml(
-                  row.timestamp
-                ) +
-                "</small>";
-
-
-              container.appendChild(
-                item
-              );
-
+        const response =
+          await fetch(
+            "./manifest.json",
+            {
+              cache: "no-store"
             }
           );
 
-        }
+
+        const manifest =
+          await response.json();
 
 
-      } else {
-
-        result.textContent =
-          "READ ERROR: " +
-          (
-            response &&
-            response.message
-              ? response.message
-              : "Unknown error"
-          );
+        const ok =
+          !!manifest.name &&
+          !!manifest.start_url &&
+          !!manifest.icons;
 
 
-        result.className =
-          "status bad";
+        setStatus(
+          "manifest",
+          ok,
+          ok
+            ? "Manifest: OK"
+            : "Manifest: ERROR"
+        );
+
+
+      } catch (e) {
+
+        setStatus(
+          "manifest",
+          false,
+          "Manifest: ERROR"
+        );
 
       }
 
-
-      delete window[callbackName];
-
-
-      if (script) {
-        script.remove();
-      }
-
-    };
+    }
 
 
-  const script =
-    document.createElement(
-      "script"
-    );
+    /* ==========================================
+       SERVICE WORKER
+    ========================================== */
 
-
-  script.src =
-    API_URL +
-    "?action=read" +
-    "&callback=" +
-    callbackName;
-
-
-  script.onerror =
-    function() {
-
-      result.textContent =
-        "READ ERROR: Connection error";
-
-
-      result.className =
-        "status bad";
-
-
-      delete window[callbackName];
-
-
-      script.remove();
-
-    };
-
-
-  document.body.appendChild(
-    script
-  );
-
-}
-
-
-/* ==========================================
-   DASHBOARD
-========================================== */
-
-function loadDashboard() {
-
-  const result =
-    document.getElementById(
-      "dashboardResult"
-    );
-
-
-  const container =
-    document.getElementById(
-      "dashboardContainer"
-    );
-
-
-  result.textContent =
-    "Dashboard: mengambil data...";
-
-  result.className =
-    "status";
-
-
-  container.innerHTML =
-    "";
-
-
-  const callbackName =
-    "dashboardCallback_" +
-    Date.now();
-
-
-  window[callbackName] =
-    function(data) {
+    async function testServiceWorker() {
 
       if (
-        data &&
-        data.success &&
-        data.data
+        !("serviceWorker" in navigator)
       ) {
 
-        const dashboard =
-          data.data;
+        setStatus(
+          "sw",
+          false,
+          "Service Worker: tidak didukung"
+        );
+
+        return;
+      }
 
 
-        const settings =
-          dashboard.settings || {};
+      try {
 
-
-        const users =
-          dashboard.users || [];
-
-
-        result.textContent =
-          "Dashboard berhasil dimuat";
-
-
-        result.className =
-          "status ok";
-
-
-        const appInfo =
-          document.createElement(
-            "div"
+        const registration =
+          await navigator.serviceWorker.register(
+            "./service-worker.js"
           );
 
 
-        appInfo.className =
-          "status";
+        await navigator.serviceWorker.ready;
 
 
-        appInfo.innerHTML =
-          "<strong>" +
-          escapeHtml(
-            settings.app_name ||
-            "Unknown App"
-          ) +
-          "</strong><br>" +
-
-          "Version: " +
-          escapeHtml(
-            settings.app_version ||
-            "-"
-          ) +
-          "<br>" +
-
-          "Maintenance: " +
-          escapeHtml(
-            String(
-              settings.maintenance
-            )
-          );
-
-
-        container.appendChild(
-          appInfo
+        setStatus(
+          "sw",
+          true,
+          "Service Worker: AKTIF (" +
+          registration.scope +
+          ")"
         );
 
 
-        const count =
-          document.createElement(
-            "div"
-          );
+      } catch (e) {
+
+        setStatus(
+          "sw",
+          false,
+          "Service Worker: ERROR — " +
+          e.message
+        );
+
+      }
+
+    }
 
 
-        count.className =
-          "status";
+    /* ==========================================
+       APPS SCRIPT HEALTH
+    ========================================== */
 
+    function testAppsScript() {
 
-        count.innerHTML =
-          "<strong>Users</strong><br>" +
-
-          escapeHtml(
-            String(
-              dashboard.userCount || 0
-            )
-          );
-
-
-        container.appendChild(
-          count
+      const result =
+        document.getElementById(
+          "apiResult"
         );
 
 
-        users.forEach(
-          function(user) {
+      result.textContent =
+        "Apps Script: connecting...";
 
-            const item =
+      result.className =
+        "status";
+
+
+      const callbackName =
+        "pwaCallback_" +
+        Date.now();
+
+
+      let script = null;
+
+
+      window[callbackName] =
+        function(data) {
+
+          if (
+            data &&
+            data.success
+          ) {
+
+            result.textContent =
+              "Apps Script: CONNECTED | " +
+              (data.message || "API berjalan normal") +
+              " | Spreadsheet: " +
+              (data.spreadsheet || "-");
+
+
+            result.className =
+              "status ok";
+
+
+          } else {
+
+            result.textContent =
+              "Apps Script: ERROR";
+
+
+            result.className =
+              "status bad";
+
+          }
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      script =
+        document.createElement("script");
+
+
+      script.src =
+        API_URL +
+        "?action=health" +
+        "&callback=" +
+        callbackName;
+
+
+      script.onerror =
+        function() {
+
+          result.textContent =
+            "Apps Script: CONNECTION ERROR";
+
+
+          result.className =
+            "status bad";
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      document.body.appendChild(
+        script
+      );
+
+    }
+
+
+    /* ==========================================
+       WRITE TEST
+    ========================================== */
+
+    function writeToSheets() {
+
+      const result =
+        document.getElementById(
+          "writeResult"
+        );
+
+
+      result.textContent =
+        "Write: mengirim data...";
+
+      result.className =
+        "status";
+
+
+      const callbackName =
+        "writeCallback_" +
+        Date.now();
+
+
+      let script = null;
+
+
+      window[callbackName] =
+        function(response) {
+
+          if (
+            response &&
+            response.success &&
+            response.data
+          ) {
+
+            const data =
+              response.data;
+
+
+            result.textContent =
+              "WRITE BERHASIL! " +
+              (data.message || "Data berhasil ditulis");
+
+
+            result.className =
+              "status ok";
+
+
+          } else {
+
+            result.textContent =
+              "WRITE ERROR: " +
+              (
+                response &&
+                response.message
+                  ? response.message
+                  : "Unknown error"
+              );
+
+
+            result.className =
+              "status bad";
+
+          }
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      script =
+        document.createElement("script");
+
+
+      script.src =
+        API_URL +
+        "?action=write" +
+        "&callback=" +
+        callbackName;
+
+
+      script.onerror =
+        function() {
+
+          result.textContent =
+            "WRITE ERROR: Connection error";
+
+
+          result.className =
+            "status bad";
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      document.body.appendChild(
+        script
+      );
+
+    }
+
+
+    /* ==========================================
+       READ PWA_TEST
+    ========================================== */
+
+    function readFromSheets() {
+
+      const result =
+        document.getElementById(
+          "readResult"
+        );
+
+
+      const container =
+        document.getElementById(
+          "dataContainer"
+        );
+
+
+      result.textContent =
+        "Read: membaca Google Sheets...";
+
+      result.className =
+        "status";
+
+
+      container.innerHTML =
+        "";
+
+
+      const callbackName =
+        "readCallback_" +
+        Date.now();
+
+
+      let script = null;
+
+
+      window[callbackName] =
+        function(response) {
+
+          if (
+            response &&
+            response.success &&
+            response.data
+          ) {
+
+            const data =
+              response.data;
+
+
+            const rows =
+              data.rows || [];
+
+
+            const count =
+              data.count || 0;
+
+
+            result.textContent =
+              "READ BERHASIL! " +
+              "Data berhasil dibaca dari Google Sheets" +
+              " | Total: " +
+              count;
+
+
+            result.className =
+              "status ok";
+
+
+            if (
+              rows.length === 0
+            ) {
+
+              container.innerHTML =
+                "<p>Belum ada data.</p>";
+
+            } else {
+
+              rows.forEach(
+                function(row) {
+
+                  const item =
+                    document.createElement(
+                      "div"
+                    );
+
+
+                  item.className =
+                    "status";
+
+
+                  item.innerHTML =
+                    "<strong>" +
+                    escapeHtml(
+                      row.source
+                    ) +
+                    "</strong><br>" +
+
+                    escapeHtml(
+                      row.message
+                    ) +
+                    "<br>" +
+
+                    "<small>" +
+                    escapeHtml(
+                      row.timestamp
+                    ) +
+                    "</small>";
+
+
+                  container.appendChild(
+                    item
+                  );
+
+                }
+              );
+
+            }
+
+
+          } else {
+
+            result.textContent =
+              "READ ERROR: " +
+              (
+                response &&
+                response.message
+                  ? response.message
+                  : "Unknown error"
+              );
+
+
+            result.className =
+              "status bad";
+
+          }
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      script =
+        document.createElement("script");
+
+
+      script.src =
+        API_URL +
+        "?action=read" +
+        "&callback=" +
+        callbackName;
+
+
+      script.onerror =
+        function() {
+
+          result.textContent =
+            "READ ERROR: Connection error";
+
+
+          result.className =
+            "status bad";
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      document.body.appendChild(
+        script
+      );
+
+    }
+
+
+    /* ==========================================
+       DASHBOARD
+    ========================================== */
+
+    function loadDashboard() {
+
+      const result =
+        document.getElementById(
+          "dashboardResult"
+        );
+
+
+      const container =
+        document.getElementById(
+          "dashboardContainer"
+        );
+
+
+      result.textContent =
+        "Dashboard: mengambil data...";
+
+      result.className =
+        "status";
+
+
+      container.innerHTML =
+        "";
+
+
+      const callbackName =
+        "dashboardCallback_" +
+        Date.now();
+
+
+      let script = null;
+
+
+      window[callbackName] =
+        function(data) {
+
+          if (
+            data &&
+            data.success &&
+            data.data
+          ) {
+
+            const dashboard =
+              data.data;
+
+
+            const settings =
+              dashboard.settings || {};
+
+
+            const users =
+              dashboard.users || [];
+
+
+            result.textContent =
+              "Dashboard berhasil dimuat";
+
+
+            result.className =
+              "status ok";
+
+
+            /* APP INFO */
+
+            const appInfo =
               document.createElement(
                 "div"
               );
 
 
-            item.className =
+            appInfo.className =
               "status";
 
 
-            item.innerHTML =
+            appInfo.innerHTML =
               "<strong>" +
               escapeHtml(
-                user.name
+                settings.app_name ||
+                "Unknown App"
               ) +
               "</strong><br>" +
 
+              "Version: " +
               escapeHtml(
-                user.email
+                settings.app_version ||
+                "-"
               ) +
               "<br>" +
 
-              "Status: " +
+              "Maintenance: " +
               escapeHtml(
-                user.status
+                String(
+                  settings.maintenance
+                )
               );
 
 
             container.appendChild(
-              item
+              appInfo
             );
 
+
+            /* USER COUNT */
+
+            const count =
+              document.createElement(
+                "div"
+              );
+
+
+            count.className =
+              "status";
+
+
+            count.innerHTML =
+              "<strong>Users</strong><br>" +
+
+              escapeHtml(
+                String(
+                  dashboard.userCount || 0
+                )
+              );
+
+
+            container.appendChild(
+              count
+            );
+
+
+            /* USERS */
+
+            users.forEach(
+              function(user) {
+
+                const item =
+                  document.createElement(
+                    "div"
+                  );
+
+
+                item.className =
+                  "status";
+
+
+                item.innerHTML =
+                  "<strong>" +
+                  escapeHtml(
+                    user.name
+                  ) +
+                  "</strong><br>" +
+
+                  escapeHtml(
+                    user.email
+                  ) +
+                  "<br>" +
+
+                  "Status: " +
+                  escapeHtml(
+                    user.status
+                  );
+
+
+                container.appendChild(
+                  item
+                );
+
+              }
+            );
+
+
+          } else {
+
+            result.textContent =
+              "Dashboard ERROR: " +
+              (
+                data &&
+                data.message
+                  ? data.message
+                  : "Unknown error"
+              );
+
+
+            result.className =
+              "status bad";
+
           }
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      script =
+        document.createElement("script");
+
+
+      script.src =
+        API_URL +
+        "?action=dashboard" +
+        "&callback=" +
+        callbackName;
+
+
+      script.onerror =
+        function() {
+
+          result.textContent =
+            "Dashboard ERROR: Connection error";
+
+
+          result.className =
+            "status bad";
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      document.body.appendChild(
+        script
+      );
+
+    }
+
+
+    /* ==========================================
+       ADD TRANSACTION
+    ========================================== */
+
+    function submitTransaction(event) {
+
+      event.preventDefault();
+
+
+      const result =
+        document.getElementById(
+          "addTransactionResult"
         );
 
 
-      } else {
+      const type =
+        document.getElementById(
+          "transactionType"
+        ).value;
+
+
+      const category =
+        document.getElementById(
+          "transactionCategory"
+        ).value.trim();
+
+
+      const description =
+        document.getElementById(
+          "transactionDescription"
+        ).value.trim();
+
+
+      const amount =
+        Number(
+          document.getElementById(
+            "transactionAmount"
+          ).value
+        );
+
+
+      /* VALIDASI */
+
+      if (!type) {
 
         result.textContent =
-          "Dashboard ERROR: " +
-          (
-            data &&
-            data.message
-              ? data.message
-              : "Unknown error"
-          );
-
+          "ERROR: Type wajib dipilih";
 
         result.className =
           "status bad";
 
+        return;
       }
 
 
-      delete window[callbackName];
-
-
-      if (script) {
-        script.remove();
-      }
-
-    };
-
-
-  const script =
-    document.createElement(
-      "script"
-    );
-
-
-  script.src =
-    API_URL +
-    "?action=dashboard" +
-    "&callback=" +
-    callbackName;
-
-
-  script.onerror =
-    function() {
-
-      result.textContent =
-        "Dashboard ERROR: Connection error";
-
-
-      result.className =
-        "status bad";
-
-
-      delete window[callbackName];
-
-
-      script.remove();
-
-    };
-
-
-  document.body.appendChild(
-    script
-  );
-
-}
-
-
-/* ==========================================
-   TRANSACTIONS
-========================================== */
-
-function loadTransactions() {
-
-  const result =
-    document.getElementById(
-      "transactionResult"
-    );
-
-
-  const container =
-    document.getElementById(
-      "transactionContainer"
-    );
-
-
-  result.textContent =
-    "Transactions: membaca data...";
-
-  result.className =
-    "status";
-
-
-  container.innerHTML =
-    "";
-
-
-  const callbackName =
-    "transactionCallback_" +
-    Date.now();
-
-
-  window[callbackName] =
-    function(response) {
-
-      if (
-        response &&
-        response.success &&
-        response.data
-      ) {
-
-        const data =
-          response.data;
-
-
-        const rows =
-          data.rows || [];
-
+      if (!category) {
 
         result.textContent =
-          "TRANSACTIONS BERHASIL! " +
-          "Total: " +
-          data.count;
-
+          "ERROR: Category wajib diisi";
 
         result.className =
-          "status ok";
+          "status bad";
+
+        return;
+      }
 
 
-        if (
-          rows.length === 0
-        ) {
+      if (!description) {
 
-          container.innerHTML =
-            "<p>Belum ada transaksi.</p>";
+        result.textContent =
+          "ERROR: Description wajib diisi";
 
-        } else {
+        result.className =
+          "status bad";
 
-          rows.forEach(
-            function(transaction) {
-
-              const item =
-                document.createElement(
-                  "div"
-                );
+        return;
+      }
 
 
-              item.className =
-                "status";
+      if (
+        !Number.isFinite(amount) ||
+        amount <= 0
+      ) {
+
+        result.textContent =
+          "ERROR: Amount harus lebih dari 0";
+
+        result.className =
+          "status bad";
+
+        return;
+      }
 
 
-              const amount =
-                Number(
-                  transaction.amount || 0
-                );
+      /* STATUS */
+
+      result.textContent =
+        "Transaksi: menyimpan...";
+
+      result.className =
+        "status";
 
 
-              item.innerHTML =
-
-                "<strong>" +
-                escapeHtml(
-                  transaction.category
-                ) +
-                "</strong><br>" +
-
-                escapeHtml(
-                  transaction.description
-                ) +
-                "<br>" +
-
-                "Type: " +
-                escapeHtml(
-                  transaction.type
-                ) +
-                "<br>" +
-
-                "Amount: Rp " +
-                amount.toLocaleString(
-                  "id-ID"
-                ) +
-                "<br>" +
-
-                "Date: " +
-                escapeHtml(
-                  transaction.date
-                ) +
-                "<br>" +
-
-                "Status: " +
-                escapeHtml(
-                  transaction.status
-                );
+      const callbackName =
+        "addTransactionCallback_" +
+        Date.now();
 
 
-              container.appendChild(
-                item
+      let script = null;
+
+
+      /* CALLBACK */
+
+      window[callbackName] =
+        function(response) {
+
+          if (
+            response &&
+            response.success &&
+            response.data
+          ) {
+
+            const data =
+              response.data;
+
+
+            result.innerHTML =
+              "<strong>" +
+              "TRANSAKSI BERHASIL DISIMPAN" +
+              "</strong><br><br>" +
+
+              "ID: " +
+              escapeHtml(
+                data.id
+              ) +
+              "<br>" +
+
+              escapeHtml(
+                data.category
+              ) +
+              "<br>" +
+
+              escapeHtml(
+                data.description
+              ) +
+              "<br>" +
+
+              escapeHtml(
+                data.type
+              ) +
+              "<br>" +
+
+              "Rp " +
+              Number(
+                data.amount || 0
+              ).toLocaleString(
+                "id-ID"
+              );
+
+
+            result.className =
+              "status ok";
+
+
+            /* RESET FORM */
+
+            document
+              .getElementById(
+                "transactionForm"
+              )
+              .reset();
+
+
+            /* REFRESH TRANSACTIONS */
+
+            loadTransactions();
+
+
+          } else {
+
+            result.textContent =
+              "TRANSAKSI ERROR: " +
+              (
+                response &&
+                response.message
+                  ? response.message
+                  : "Unknown error"
+              );
+
+
+            result.className =
+              "status bad";
+
+          }
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      /* JSONP SCRIPT */
+
+      script =
+        document.createElement(
+          "script"
+        );
+
+
+      script.src =
+        API_URL +
+
+        "?action=addTransaction" +
+
+        "&type=" +
+        encodeURIComponent(
+          type
+        ) +
+
+        "&category=" +
+        encodeURIComponent(
+          category
+        ) +
+
+        "&description=" +
+        encodeURIComponent(
+          description
+        ) +
+
+        "&amount=" +
+        encodeURIComponent(
+          amount
+        ) +
+
+        "&callback=" +
+        callbackName;
+
+
+      /* ERROR */
+
+      script.onerror =
+        function() {
+
+          result.textContent =
+            "TRANSAKSI ERROR: Connection error";
+
+
+          result.className =
+            "status bad";
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      document.body.appendChild(
+        script
+      );
+
+    }
+
+
+    /* ==========================================
+       LOAD TRANSACTIONS
+    ========================================== */
+
+    function loadTransactions() {
+
+      const result =
+        document.getElementById(
+          "transactionResult"
+        );
+
+
+      const container =
+        document.getElementById(
+          "transactionContainer"
+        );
+
+
+      result.textContent =
+        "Transactions: membaca data...";
+
+      result.className =
+        "status";
+
+
+      container.innerHTML =
+        "";
+
+
+      const callbackName =
+        "transactionCallback_" +
+        Date.now();
+
+
+      let script = null;
+
+
+      window[callbackName] =
+        function(response) {
+
+          if (
+            response &&
+            response.success &&
+            response.data
+          ) {
+
+            const data =
+              response.data;
+
+
+            const rows =
+              data.rows || [];
+
+
+            result.textContent =
+              "TRANSACTIONS BERHASIL! " +
+              "Total: " +
+              (data.count || rows.length);
+
+
+            result.className =
+              "status ok";
+
+
+            if (
+              rows.length === 0
+            ) {
+
+              container.innerHTML =
+                "<p>Belum ada transaksi.</p>";
+
+            } else {
+
+              rows.forEach(
+                function(transaction) {
+
+                  const item =
+                    document.createElement(
+                      "div"
+                    );
+
+
+                  item.className =
+                    "status transaction-item";
+
+
+                  const amount =
+                    Number(
+                      transaction.amount || 0
+                    );
+
+
+                  item.innerHTML =
+
+                    "<strong>" +
+                    escapeHtml(
+                      transaction.category
+                    ) +
+                    "</strong><br>" +
+
+                    escapeHtml(
+                      transaction.description
+                    ) +
+                    "<br>" +
+
+                    "Type: " +
+                    escapeHtml(
+                      transaction.type
+                    ) +
+                    "<br>" +
+
+                    "<span class='amount'>" +
+                    "Rp " +
+                    amount.toLocaleString(
+                      "id-ID"
+                    ) +
+                    "</span><br>" +
+
+                    "Date: " +
+                    escapeHtml(
+                      transaction.date
+                    ) +
+                    "<br>" +
+
+                    "Status: " +
+                    escapeHtml(
+                      transaction.status
+                    );
+
+
+                  container.appendChild(
+                    item
+                  );
+
+                }
               );
 
             }
-          );
-
-        }
 
 
-      } else {
+          } else {
 
-        result.textContent =
-          "TRANSACTIONS ERROR: " +
-          (
-            response &&
-            response.message
-              ? response.message
-              : "Unknown error"
-          );
-
-
-        result.className =
-          "status bad";
-
-      }
+            result.textContent =
+              "TRANSACTIONS ERROR: " +
+              (
+                response &&
+                response.message
+                  ? response.message
+                  : "Unknown error"
+              );
 
 
-      delete window[callbackName];
+            result.className =
+              "status bad";
+
+          }
 
 
-      if (script) {
-        script.remove();
-      }
-
-    };
+          delete window[callbackName];
 
 
-  const script =
-    document.createElement(
-      "script"
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      script =
+        document.createElement(
+          "script"
+        );
+
+
+      script.src =
+        API_URL +
+        "?action=transactions" +
+        "&callback=" +
+        callbackName;
+
+
+      script.onerror =
+        function() {
+
+          result.textContent =
+            "TRANSACTIONS ERROR: Connection error";
+
+
+          result.className =
+            "status bad";
+
+
+          delete window[callbackName];
+
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+
+      document.body.appendChild(
+        script
+      );
+
+    }
+
+
+    /* ==========================================
+       DISPLAY MODE
+    ========================================== */
+
+    function testDisplayMode() {
+
+      const standalone =
+        window
+          .matchMedia(
+            "(display-mode: standalone)"
+          )
+          .matches;
+
+
+      setStatus(
+        "mode",
+        true,
+        standalone
+          ? "Display mode: STANDALONE (PWA)"
+          : "Display mode: BROWSER"
+      );
+
+    }
+
+
+    /* ==========================================
+       NETWORK
+    ========================================== */
+
+    function networkStatus() {
+
+      const el =
+        document.getElementById(
+          "offline"
+        );
+
+
+      el.textContent =
+        "Status jaringan: " +
+        (
+          navigator.onLine
+            ? "ONLINE"
+            : "OFFLINE"
+        );
+
+    }
+
+
+    window.addEventListener(
+      "online",
+      networkStatus
     );
 
 
-  script.src =
-    API_URL +
-    "?action=transactions" +
-    "&callback=" +
-    callbackName;
-
-
-  script.onerror =
-    function() {
-
-      result.textContent =
-        "TRANSACTIONS ERROR: Connection error";
-
-
-      result.className =
-        "status bad";
-
-
-      delete window[callbackName];
-
-
-      script.remove();
-
-    };
-
-
-  document.body.appendChild(
-    script
-  );
-
-}
-
-
-/* ==========================================
-   ESCAPE HTML
-========================================== */
-
-function escapeHtml(value) {
-
-  return String(value)
-
-    .replace(
-      /&/g,
-      "&amp;"
-    )
-
-    .replace(
-      /</g,
-      "&lt;"
-    )
-
-    .replace(
-      />/g,
-      "&gt;"
-    )
-
-    .replace(
-      /"/g,
-      "&quot;"
-    )
-
-    .replace(
-      /'/g,
-      "&#039;"
+    window.addEventListener(
+      "offline",
+      networkStatus
     );
 
-}
 
+    /* ==========================================
+       START
+    ========================================== */
 
-/* ==========================================
-   DISPLAY MODE
-========================================== */
+    testManifest();
 
-function testDisplayMode() {
+    testServiceWorker();
 
-  const standalone =
-    window.matchMedia(
-      "(display-mode: standalone)"
-    ).matches;
+    testDisplayMode();
 
+    networkStatus();
 
-  setStatus(
-    "mode",
-    true,
-    standalone
-      ? "Display mode: STANDALONE (PWA)"
-      : "Display mode: BROWSER"
-  );
-
-}
-
-
-/* ==========================================
-   NETWORK
-========================================== */
-
-function networkStatus() {
-
-  document.getElementById(
-    "offline"
-  ).textContent =
-    "Status jaringan: " +
-    (
-      navigator.onLine
-        ? "ONLINE"
-        : "OFFLINE"
-    );
-
-}
-
-
-window.addEventListener(
-  "online",
-  networkStatus
-);
-
-
-window.addEventListener(
-  "offline",
-  networkStatus
-);
-
-
-/* ==========================================
-   START
-========================================== */
-
-testManifest();
-
-testServiceWorker();
-
-testDisplayMode();
-
-networkStatus();
-
-
-</script>
+  </script>
 
 </body>
 
