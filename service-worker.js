@@ -1,20 +1,21 @@
-const CACHE_NAME = "finance-tracker-v14-1";
+const CACHE_NAME = "finance-tracker-v15-1";
 
 const APP_SHELL = [
   "./",
   "./index.html",
   "./manifest.json",
-  "./ft-logo.png?v=14",
-  "./ft-icon-64.png?v=14",
-  "./ft-icon-180.png?v=14",
-  "./ft-icon-192.png?v=14",
-  "./ft-icon-512.png?v=14"
+  "./ft-logo.png?v=15",
+  "./ft-icon-64.png?v=15",
+  "./ft-icon-180.png?v=15",
+  "./ft-icon-192.png?v=15",
+  "./ft-icon-512.png?v=15"
 ];
 
 
 // ==========================================
 // INSTALL
 // ==========================================
+
 self.addEventListener("install", (event) => {
   event.waitUntil(
     caches
@@ -28,6 +29,7 @@ self.addEventListener("install", (event) => {
 // ==========================================
 // ACTIVATE
 // ==========================================
+
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches
@@ -47,6 +49,7 @@ self.addEventListener("activate", (event) => {
 // ==========================================
 // FETCH
 // ==========================================
+
 self.addEventListener("fetch", (event) => {
   const request = event.request;
 
@@ -56,14 +59,18 @@ self.addEventListener("fetch", (event) => {
 
   const requestUrl = new URL(request.url);
 
-  // Request lintas domain, termasuk JSONP Google Apps Script,
-  // harus berjalan langsung melalui browser dan tidak dikelola cache PWA.
+  /*
+   * Request lintas domain, termasuk JSONP Google Apps Script,
+   * tidak dikelola cache Service Worker.
+   */
   if (requestUrl.origin !== self.location.origin) {
     return;
   }
 
-  // Halaman utama menggunakan network-first agar index.html terbaru
-  // segera terlihat setelah deployment GitHub Pages.
+  /*
+   * Halaman utama menggunakan network-first.
+   * Versi terbaru dari GitHub Pages akan diprioritaskan.
+   */
   if (request.mode === "navigate") {
     event.respondWith(
       fetch(request)
@@ -73,38 +80,46 @@ self.addEventListener("fetch", (event) => {
 
             caches
               .open(CACHE_NAME)
-              .then((cache) => cache.put("./index.html", copy));
+              .then((cache) => {
+                cache.put("./index.html", copy);
+              });
           }
 
           return response;
         })
-        .catch(() =>
-          caches.match("./index.html")
-        )
+        .catch(() => {
+          return caches.match("./index.html");
+        })
     );
 
     return;
   }
 
-  // File statis menggunakan cache-first.
+  /*
+   * File statis menggunakan cache-first.
+   */
   event.respondWith(
-    caches.match(request).then((cached) => {
-      if (cached) {
-        return cached;
-      }
-
-      return fetch(request).then((response) => {
-        if (response && response.ok) {
-          const copy = response.clone();
-
-          caches
-            .open(CACHE_NAME)
-            .then((cache) => cache.put(request, copy));
+    caches
+      .match(request)
+      .then((cached) => {
+        if (cached) {
+          return cached;
         }
 
-        return response;
-      });
-    })
+        return fetch(request)
+          .then((response) => {
+            if (response && response.ok) {
+              const copy = response.clone();
+
+              caches
+                .open(CACHE_NAME)
+                .then((cache) => {
+                  cache.put(request, copy);
+                });
+            }
+
+            return response;
+          });
+      })
   );
 });
-
