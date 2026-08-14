@@ -66,7 +66,7 @@
     body {
       margin: 0;
       min-height: 100vh;
-      padding: 16px;
+      padding: 8px;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system,
         BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--color-text);
@@ -76,22 +76,45 @@
     }
 
     .card {
-      width: min(100%, 1120px);
+      width: min(100%, 960px);
       margin: 0 auto;
-      padding: clamp(18px, 4vw, 40px);
+      padding: 14px;
       background: rgba(255, 255, 255, .96);
       border: 1px solid rgba(219, 227, 238, .9);
-      border-radius: var(--radius-lg);
+      border-radius: 18px;
       box-shadow: var(--shadow-card);
     }
 
     .app-header {
-      margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) var(--space-6);
-      padding: clamp(24px, 5vw, 44px);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: -6px -6px 22px;
+      padding: 18px;
       color: #ffffff;
       text-align: left;
       background: linear-gradient(135deg, var(--color-brand-900), #245b91);
-      border-radius: 20px;
+      border-radius: 15px;
+    }
+
+    .brand-mark {
+      display: grid;
+      flex: 0 0 46px;
+      width: 46px;
+      height: 46px;
+      place-items: center;
+      color: var(--color-brand-900);
+      font-size: 17px;
+      font-weight: 900;
+      letter-spacing: -.04em;
+      background: #ffffff;
+      border: 3px solid rgba(255, 255, 255, .3);
+      border-radius: 14px;
+      box-shadow: 0 8px 18px rgba(0, 0, 0, .14);
+    }
+
+    .brand-copy {
+      min-width: 0;
     }
 
     .app-eyebrow {
@@ -112,22 +135,22 @@
 
     h1 {
       margin: 0;
-      font-size: clamp(28px, 6vw, 46px);
+      font-size: clamp(24px, 6vw, 40px);
       line-height: 1.08;
       letter-spacing: -.035em;
     }
 
     h2 {
-      margin: var(--space-6) 0 var(--space-3);
+      margin: 24px 0 10px;
       color: var(--color-brand-900);
-      font-size: clamp(21px, 4vw, 28px);
+      font-size: clamp(19px, 4vw, 26px);
       letter-spacing: -.02em;
     }
 
     .app-subtitle {
-      margin: var(--space-2) 0 0;
+      margin: 4px 0 0;
       color: #dceafb;
-      font-size: 15px;
+      font-size: 12px;
     }
 
     .section-heading {
@@ -151,10 +174,10 @@
 
     .period-filter {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--space-3);
-      margin: var(--space-4) 0 var(--space-2);
-      padding: var(--space-4);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 14px 0 8px;
+      padding: 12px;
       text-align: left;
       background: #f8fbff;
       border: 1px solid var(--color-border);
@@ -167,8 +190,9 @@
     
     .period-actions {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--space-2);
+      grid-column: 1 / -1;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px;
     }
     
     .period-actions button {
@@ -177,15 +201,16 @@
 
     .summary-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: var(--space-3);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
     }
 
     .summary-card {
       position: relative;
       overflow: hidden;
-      min-height: 132px;
-      padding: var(--space-5);
+      min-width: 0;
+      min-height: 108px;
+      padding: 14px;
       text-align: left;
       background: var(--color-surface);
       border: 1px solid var(--color-border);
@@ -214,14 +239,16 @@
     }
 
     .summary-card--balance {
+      grid-column: 1 / -1;
       color: var(--color-brand-600);
+      background: linear-gradient(135deg, #f7fbff, #eaf3fd);
     }
 
     .summary-label {
       display: block;
       margin-bottom: var(--space-2);
       color: var(--color-muted);
-      font-size: 13px;
+      font-size: 10px;
       font-weight: 700;
       letter-spacing: .04em;
       text-transform: uppercase;
@@ -230,21 +257,22 @@
     .summary-value {
       display: block;
       color: currentColor;
-      font-size: clamp(24px, 5vw, 34px);
+      font-size: clamp(16px, 4.5vw, 30px);
       font-weight: 800;
       line-height: 1.2;
       font-variant-numeric: tabular-nums;
+      white-space: nowrap;
     }
 
     .summary-meta {
       margin: var(--space-2) 0 0;
       color: var(--color-muted);
-      font-size: 12px;
+      font-size: 10px;
     }
 
     .status {
       margin: var(--space-3) 0;
-      padding: var(--space-3);
+      padding: 11px;
       color: #344054;
       text-align: left;
       background: #f7f9fc;
@@ -267,9 +295,9 @@
 
     button {
       width: 100%;
-      min-height: 48px;
+      min-height: 44px;
       margin-top: var(--space-2);
-      padding: 12px 16px;
+      padding: 10px 12px;
       color: #ffffff;
       font: inherit;
       font-weight: 750;
@@ -313,7 +341,7 @@
     input,
     select {
       width: 100%;
-      min-height: 48px;
+      min-height: 44px;
       padding: 11px 13px;
       color: var(--color-text);
       font: inherit;
@@ -328,14 +356,17 @@
     }
 
     .form-box {
-      padding: var(--space-5);
+      padding: 14px;
       text-align: left;
       background: #f8fbff;
       border-radius: var(--radius-md);
     }
 
     .transaction-item {
-      padding: var(--space-4);
+      min-width: 0;
+      margin: 0;
+      padding: 11px;
+      font-size: 12px;
       text-align: left;
       background: var(--color-surface);
       border-left: 4px solid var(--color-brand-600);
@@ -346,20 +377,25 @@
       display: inline-block;
       margin: var(--space-1) 0;
       color: var(--color-brand-900);
-      font-size: 20px;
+      max-width: 100%;
+      font-size: clamp(14px, 4vw, 20px);
       font-weight: 800;
       font-variant-numeric: tabular-nums;
+      overflow-wrap: anywhere;
     }
 
     .transaction-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: var(--space-2);
-      margin-top: var(--space-3);
+      gap: 6px;
+      margin-top: 10px;
     }
 
     .transaction-actions button {
       margin-top: 0;
+      min-height: 36px;
+      padding: 7px 5px;
+      font-size: 10px;
     }
 
     .button-secondary {
@@ -379,6 +415,36 @@
       border-radius: 999px;
     }
 
+    #transactionContainer {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    #transactionContainer > p {
+      grid-column: 1 / -1;
+    }
+
+    .diagnostics-panel {
+      margin-top: 16px;
+      padding: 0 12px 12px;
+      background: #f8fafc;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+    }
+
+    .diagnostics-panel summary {
+      padding: 14px 0;
+      color: var(--color-brand-900);
+      font-size: 13px;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .diagnostics-panel[open] summary {
+      border-bottom: 1px solid var(--color-border);
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -389,20 +455,24 @@
       }
 
       .summary-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .card {
-        padding: 44px;
+        padding: 30px;
       }
 
       .app-header {
-        margin: -24px -24px var(--space-6);
+        margin: -16px -16px var(--space-6);
       }
 
       .period-filter {
         grid-template-columns: 1fr 1fr;
         align-items: end;
+      }
+
+      #transactionContainer {
+        gap: 14px;
       }
       
       .period-actions {
@@ -429,13 +499,17 @@
   <main class="card">
 
     <header class="app-header">
-      <p class="app-eyebrow">Finance Operations</p>
+      <div class="brand-mark" aria-hidden="true">FT</div>
 
-      <h1>Finance Tracker</h1>
+      <div class="brand-copy">
+        <p class="app-eyebrow">Finance Operations</p>
 
-      <p class="app-subtitle">
-        Pencatatan transaksi dan monitoring posisi keuangan
-      </p>
+        <h1>Finance Tracker</h1>
+
+        <p class="app-subtitle">
+          Pencatatan dan monitoring keuangan
+        </p>
+      </div>
     </header>
 
 
@@ -498,7 +572,7 @@
           <button
             id="financeSummaryButton"
             type="button"
-            onclick="loadFinanceSummary()"
+            onclick="applyFinancePeriod()"
           >
             Terapkan Periode
           </button>
@@ -527,6 +601,9 @@
     <!-- =========================================
          PWA STATUS
     ========================================== -->
+
+    <details class="diagnostics-panel">
+      <summary>System & Connection Test</summary>
 
     <div
       id="manifest"
@@ -649,6 +726,8 @@
       style="text-align:left;"
     >
     </div>
+
+    </details>
 
 
     <!-- =========================================
@@ -1779,6 +1858,15 @@
 
     }
 
+    function applyFinancePeriod() {
+
+      loadFinanceSummary();
+
+      loadTransactions();
+
+    }
+
+
     function resetFinancePeriod() {
 
       document.getElementById(
@@ -1790,6 +1878,8 @@
       ).value = "";
     
       loadFinanceSummary();
+
+      loadTransactions();
     
     }
 
@@ -2370,6 +2460,33 @@
         );
 
 
+      const startDate =
+        document.getElementById(
+          "financeStartDate"
+        ).value;
+
+      const endDate =
+        document.getElementById(
+          "financeEndDate"
+        ).value;
+
+
+      if (
+        startDate &&
+        endDate &&
+        startDate > endDate
+      ) {
+
+        result.textContent =
+          "FILTER ERROR: Tanggal mulai tidak boleh melebihi tanggal selesai";
+
+        result.className =
+          "status bad";
+
+        return;
+      }
+
+
       result.textContent =
         "Transactions: membaca data...";
 
@@ -2618,6 +2735,21 @@
       script.src =
         API_URL +
         "?action=transactions" +
+
+        (
+          startDate
+            ? "&startDate=" +
+              encodeURIComponent(startDate)
+            : ""
+        ) +
+
+        (
+          endDate
+            ? "&endDate=" +
+              encodeURIComponent(endDate)
+            : ""
+        ) +
+
         "&callback=" +
         callbackName;
 
@@ -2729,3 +2861,4 @@
 </body>
 
 </html>
+
