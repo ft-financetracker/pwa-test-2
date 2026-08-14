@@ -11,7 +11,7 @@
 
   <meta
     name="theme-color"
-    content="#111827"
+    content="#0f2747"
   >
 
   <meta
@@ -24,135 +24,312 @@
     href="./manifest.json"
   >
 
-  <title>PWA Finance Tracker</title>
+  <title>Finance Tracker</title>
 
   <style>
+    :root {
+      --color-brand-900: #0f2747;
+      --color-brand-800: #163a64;
+      --color-brand-600: #2563a6;
+      --color-brand-100: #eaf2fb;
+      --color-surface: #ffffff;
+      --color-background: #f4f7fb;
+      --color-text: #172033;
+      --color-muted: #667085;
+      --color-border: #dbe3ee;
+      --color-success: #16794b;
+      --color-success-soft: #e9f8f0;
+      --color-danger: #b42318;
+      --color-danger-soft: #fff0ee;
+      --color-warning: #b54708;
+      --color-warning-soft: #fff6e8;
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 24px;
+      --shadow-card: 0 12px 32px rgba(15, 39, 71, .08);
+      --space-1: 6px;
+      --space-2: 10px;
+      --space-3: 14px;
+      --space-4: 18px;
+      --space-5: 24px;
+      --space-6: 32px;
+    }
+
     * {
       box-sizing: border-box;
+    }
+
+    html {
+      background: var(--color-background);
     }
 
     body {
       margin: 0;
       min-height: 100vh;
-
-      display: grid;
-      place-items: center;
-
-      font-family: Arial, sans-serif;
-
-      background: #f5f7fa;
+      padding: 16px;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system,
+        BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--color-text);
+      background:
+        radial-gradient(circle at top right, #dcecff 0, transparent 30%),
+        var(--color-background);
     }
 
     .card {
-      width: min(92%, 420px);
+      width: min(100%, 1120px);
+      margin: 0 auto;
+      padding: clamp(18px, 4vw, 40px);
+      background: rgba(255, 255, 255, .96);
+      border: 1px solid rgba(219, 227, 238, .9);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-card);
+    }
 
-      padding: 30px;
-
-      background: white;
-
+    .app-header {
+      margin: calc(var(--space-4) * -1) calc(var(--space-4) * -1) var(--space-6);
+      padding: clamp(24px, 5vw, 44px);
+      color: #ffffff;
+      text-align: left;
+      background: linear-gradient(135deg, var(--color-brand-900), #245b91);
       border-radius: 20px;
+    }
 
-      box-shadow:
-        0 10px 30px rgba(0, 0, 0, .08);
+    .app-eyebrow {
+      margin: 0 0 var(--space-1);
+      color: #bcd7f3;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+    }
 
-      text-align: center;
+    h1,
+    h2,
+    h3,
+    p {
+      overflow-wrap: anywhere;
     }
 
     h1 {
-      margin-top: 0;
+      margin: 0;
+      font-size: clamp(28px, 6vw, 46px);
+      line-height: 1.08;
+      letter-spacing: -.035em;
     }
 
     h2 {
-      margin-top: 30px;
-      margin-bottom: 10px;
+      margin: var(--space-6) 0 var(--space-3);
+      color: var(--color-brand-900);
+      font-size: clamp(21px, 4vw, 28px);
+      letter-spacing: -.02em;
+    }
+
+    .app-subtitle {
+      margin: var(--space-2) 0 0;
+      color: #dceafb;
+      font-size: 15px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: var(--space-3);
+      margin-bottom: var(--space-3);
+      text-align: left;
+    }
+
+    .section-heading h2 {
+      margin-bottom: 0;
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: var(--color-muted);
+      font-size: 13px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--space-3);
+    }
+
+    .summary-card {
+      position: relative;
+      overflow: hidden;
+      min-height: 132px;
+      padding: var(--space-5);
+      text-align: left;
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 22px rgba(15, 39, 71, .06);
+    }
+
+    .summary-card::after {
+      position: absolute;
+      right: -24px;
+      bottom: -28px;
+      width: 92px;
+      height: 92px;
+      content: "";
+      background: currentColor;
+      border-radius: 50%;
+      opacity: .07;
+    }
+
+    .summary-card--income {
+      color: var(--color-success);
+    }
+
+    .summary-card--expense {
+      color: var(--color-danger);
+    }
+
+    .summary-card--balance {
+      color: var(--color-brand-600);
+    }
+
+    .summary-label {
+      display: block;
+      margin-bottom: var(--space-2);
+      color: var(--color-muted);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    .summary-value {
+      display: block;
+      color: currentColor;
+      font-size: clamp(24px, 5vw, 34px);
+      font-weight: 800;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .summary-meta {
+      margin: var(--space-2) 0 0;
+      color: var(--color-muted);
+      font-size: 12px;
     }
 
     .status {
-      margin: 14px 0;
-
-      padding: 14px;
-
-      border-radius: 12px;
-
-      background: #f1f3f5;
-
+      margin: var(--space-3) 0;
+      padding: var(--space-3);
+      color: #344054;
+      text-align: left;
+      background: #f7f9fc;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
       word-break: break-word;
     }
 
     .ok {
-      background: #e9f7ef;
+      color: var(--color-success);
+      background: var(--color-success-soft);
+      border-color: #b7e4ca;
     }
 
     .bad {
-      background: #fdecec;
+      color: var(--color-danger);
+      background: var(--color-danger-soft);
+      border-color: #f3c1bc;
     }
 
     button {
       width: 100%;
-
-      padding: 14px;
-
+      min-height: 48px;
+      margin-top: var(--space-2);
+      padding: 12px 16px;
+      color: #ffffff;
+      font: inherit;
+      font-weight: 750;
+      background: var(--color-brand-900);
       border: 0;
-
-      border-radius: 12px;
-
-      background: #111827;
-
-      color: white;
-
-      font-size: 16px;
-
+      border-radius: var(--radius-sm);
       cursor: pointer;
+      transition: transform .16s ease, background .16s ease,
+        box-shadow .16s ease;
+    }
 
-      margin-top: 10px;
+    button:hover {
+      background: var(--color-brand-800);
+      box-shadow: 0 8px 16px rgba(15, 39, 71, .16);
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    select:focus-visible {
+      outline: 3px solid rgba(37, 99, 166, .28);
+      outline-offset: 2px;
     }
 
     button:active {
       transform: scale(.98);
     }
 
+    button:disabled {
+      cursor: not-allowed;
+      opacity: .55;
+    }
+
     label {
       display: block;
-
-      margin-top: 10px;
-
-      margin-bottom: 6px;
-
+      margin: var(--space-3) 0 var(--space-1);
+      color: #344054;
       font-size: 14px;
+      font-weight: 700;
     }
 
     input,
     select {
       width: 100%;
+      min-height: 48px;
+      padding: 11px 13px;
+      color: var(--color-text);
+      font: inherit;
+      background: var(--color-surface);
+      border: 1px solid #cbd5e1;
+      border-radius: var(--radius-sm);
+    }
 
-      padding: 12px;
-
-      border-radius: 10px;
-
-      border: 1px solid #ddd;
-
-      font-size: 16px;
-
-      background: white;
+    input:hover,
+    select:hover {
+      border-color: #94a3b8;
     }
 
     .form-box {
+      padding: var(--space-5);
       text-align: left;
+      background: #f8fbff;
+      border-radius: var(--radius-md);
     }
 
     .transaction-item {
+      padding: var(--space-4);
       text-align: left;
+      background: var(--color-surface);
+      border-left: 4px solid var(--color-brand-600);
+      box-shadow: 0 5px 14px rgba(15, 39, 71, .05);
     }
 
     .amount {
-      font-size: 18px;
-      font-weight: bold;
+      display: inline-block;
+      margin: var(--space-1) 0;
+      color: var(--color-brand-900);
+      font-size: 20px;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
     }
 
     .transaction-actions {
-      display: flex;
-      gap: 10px;
-      margin-top: 12px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-2);
+      margin-top: var(--space-3);
     }
 
     .transaction-actions button {
@@ -160,15 +337,51 @@
     }
 
     .button-secondary {
-      background: #4b5563;
+      background: #526071;
     }
 
     .button-danger {
-      background: #b91c1c;
+      background: var(--color-danger);
+    }
+
+    #offline {
+      padding: var(--space-2) var(--space-3);
+      color: var(--color-muted);
+      font-size: 13px;
+      text-align: center;
+      background: #f7f9fc;
+      border-radius: 999px;
     }
 
     [hidden] {
       display: none !important;
+    }
+
+    @media (min-width: 720px) {
+      body {
+        padding: 28px;
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .card {
+        padding: 44px;
+      }
+
+      .app-header {
+        margin: -24px -24px var(--space-6);
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition: none !important;
+      }
     }
   </style>
 
@@ -179,11 +392,66 @@
 
   <main class="card">
 
-    <h1>PWA Finance Tracker</h1>
+    <header class="app-header">
+      <p class="app-eyebrow">Finance Operations</p>
 
-    <p>
-      PWA → Apps Script → Google Sheets
-    </p>
+      <h1>Finance Tracker</h1>
+
+      <p class="app-subtitle">
+        Pencatatan transaksi dan monitoring posisi keuangan
+      </p>
+    </header>
+
+
+    <!-- =========================================
+         FINANCE SUMMARY
+    ========================================== -->
+
+    <section aria-labelledby="financeSummaryTitle">
+      <div class="section-heading">
+        <div>
+          <h2 id="financeSummaryTitle">Ringkasan Keuangan</h2>
+          <p id="financeSummaryMeta">Data transaksi aktif</p>
+        </div>
+      </div>
+
+      <div class="summary-grid">
+        <article class="summary-card summary-card--income">
+          <span class="summary-label">Total Income</span>
+          <strong id="totalIncome" class="summary-value">Rp 0</strong>
+          <p class="summary-meta">Seluruh pemasukan aktif</p>
+        </article>
+
+        <article class="summary-card summary-card--expense">
+          <span class="summary-label">Total Expense</span>
+          <strong id="totalExpense" class="summary-value">Rp 0</strong>
+          <p class="summary-meta">Seluruh pengeluaran aktif</p>
+        </article>
+
+        <article class="summary-card summary-card--balance">
+          <span class="summary-label">Balance</span>
+          <strong id="financeBalance" class="summary-value">Rp 0</strong>
+          <p class="summary-meta">Income dikurangi Expense</p>
+        </article>
+      </div>
+
+      <button
+        id="financeSummaryButton"
+        type="button"
+        onclick="loadFinanceSummary()"
+      >
+        Perbarui Ringkasan
+      </button>
+
+      <div
+        id="financeSummaryResult"
+        class="status"
+        role="status"
+        aria-live="polite"
+      >
+        Ringkasan: belum dimuat
+      </div>
+    </section>
 
 
     <!-- =========================================
@@ -1269,6 +1537,139 @@
 
 
     /* ==========================================
+       FINANCE SUMMARY
+    ========================================== */
+
+    function formatCurrency(value) {
+
+      return "Rp " +
+        Number(value || 0)
+          .toLocaleString("id-ID");
+
+    }
+
+
+    function loadFinanceSummary() {
+
+      const result =
+        document.getElementById(
+          "financeSummaryResult"
+        );
+
+      const meta =
+        document.getElementById(
+          "financeSummaryMeta"
+        );
+
+      result.textContent =
+        "Ringkasan: menghitung transaksi...";
+
+      result.className =
+        "status";
+
+      const callbackName =
+        "financeSummaryCallback_" +
+        Date.now();
+
+      let script = null;
+
+      window[callbackName] =
+        function(response) {
+
+          if (
+            response &&
+            response.success &&
+            response.data
+          ) {
+
+            const data =
+              response.data;
+
+            document.getElementById(
+              "totalIncome"
+            ).textContent =
+              formatCurrency(data.totalIncome);
+
+            document.getElementById(
+              "totalExpense"
+            ).textContent =
+              formatCurrency(data.totalExpense);
+
+            document.getElementById(
+              "financeBalance"
+            ).textContent =
+              formatCurrency(data.balance);
+
+            meta.textContent =
+              "Transaksi aktif: " +
+              Number(
+                data.activeTransactionCount || 0
+              ) +
+              " • Dihitung: " +
+              String(data.generatedAt || "-");
+
+            result.textContent =
+              "RINGKASAN KEUANGAN BERHASIL DIMUAT";
+
+            result.className =
+              "status ok";
+
+          } else {
+
+            result.textContent =
+              "RINGKASAN ERROR: " +
+              (
+                response &&
+                response.message
+                  ? response.message
+                  : "Unknown error"
+              );
+
+            result.className =
+              "status bad";
+
+          }
+
+          delete window[callbackName];
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+      script =
+        document.createElement("script");
+
+      script.src =
+        API_URL +
+        "?action=financeSummary" +
+        "&callback=" +
+        callbackName;
+
+      script.onerror =
+        function() {
+
+          result.textContent =
+            "RINGKASAN ERROR: Connection error";
+
+          result.className =
+            "status bad";
+
+          delete window[callbackName];
+
+          if (script) {
+            script.remove();
+          }
+
+        };
+
+      document.body.appendChild(script);
+
+    }
+
+
+    /* ==========================================
        ADD / EDIT TRANSACTION
     ========================================== */
 
@@ -1460,6 +1861,8 @@
             /* REFRESH TRANSACTIONS */
 
             loadTransactions();
+
+            loadFinanceSummary();
 
 
           } else {
@@ -1748,6 +2151,8 @@
 
 
             loadTransactions();
+
+            loadFinanceSummary();
 
 
           } else {
@@ -2192,6 +2597,8 @@
     testDisplayMode();
 
     networkStatus();
+
+    loadFinanceSummary();
 
   </script>
 
